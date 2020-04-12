@@ -3,6 +3,7 @@ import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Player from "../classes/Player";
 import TravelDirection from "../enums/TravelDirection";
 import Align from "../../../toolbox/js/classes/util/align";
+import Food from "../classes/Food";
 
 class SceneMain extends Phaser.Scene {
     private grid: AlignGrid;
@@ -10,9 +11,12 @@ class SceneMain extends Phaser.Scene {
     private previousTime: number = 0;
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
-    private gameSpeed: number = 1000; // ms between moving the player
+    private gameSpeed: number = 500; // ms between moving the player
 
     private gridConfig: IGridConfig;
+    private shouldAddFood: boolean = false;
+
+    private food: Food;
 
     constructor(){
         super('SceneMain');
@@ -45,6 +49,9 @@ class SceneMain extends Phaser.Scene {
             console.log("updating");
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
+            
+            this.checkPlayerCollision();
+
             this.addPendingFood();
         }
 
@@ -74,7 +81,24 @@ class SceneMain extends Phaser.Scene {
         }
     }
 
-    private shouldAddFood: boolean = false;
+    private checkPlayerCollision = () => {
+        const head = this.player.head;
+
+        if (this.food && head){
+            if (head.gridIndex == this.food.gridIndex){
+                // OM NOM NOM NOM
+                this.removeFoodItem(this.food);
+                this.player.queuePieceAddition();
+                this.shouldAddFood = true;
+            }
+        }
+    }
+
+
+    // Can be made generic
+    private removeFoodItem = (food :Food) => {
+        food.destroy();
+    }
 
     private addPendingFood = () => {
         if (!this.shouldAddFood){
@@ -82,10 +106,12 @@ class SceneMain extends Phaser.Scene {
         }
         this.shouldAddFood = false;
         const placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
-        const food = this.add.rectangle(0, 0, 100, 100, 0xffffff);
-
+        const food = this.add.rectangle(0, 0, 100, 100, 0xffffff) as Food;
+        
         Align.scaleToGameW(food, 0.02, this.game.config);
         this.grid.placeAtIndex(placement, food);
+        food.gridIndex = placement;
+        this.food = food;
     }
 
 }

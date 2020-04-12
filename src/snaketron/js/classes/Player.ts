@@ -8,6 +8,9 @@ class Player extends Phaser.GameObjects.Container {
     private grid: AlignGrid;
     private gameConfig: Phaser.Core.Config;
 
+    get head(): PlayerPart {
+        return this.parts.getFirstAlive();
+    }
 
     constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gameConfig: Phaser.Core.Config) {
         super(scene);
