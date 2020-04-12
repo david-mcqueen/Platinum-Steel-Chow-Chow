@@ -20,7 +20,7 @@ class Player extends Phaser.GameObjects.Container {
         grid.placeAtIndex(startIndex, rectHead);
         
         rectHead.gridIndex = startIndex;
-        rectHead.directionOfTravel = TravelDirection.DOWN;
+        rectHead.directionOfTravel = TravelDirection.RIGHT;
         this.parts.add(rectHead);
 
 
@@ -29,7 +29,7 @@ class Player extends Phaser.GameObjects.Container {
             Align.scaleToGameW(rectTail, 0.05, gameConfig)
             const positionTail = startIndex - index;
             rectTail.gridIndex = positionTail;
-            rectTail.directionOfTravel = TravelDirection.DOWN;
+            rectTail.directionOfTravel = TravelDirection.RIGHT;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
 
             this.parts.add(rectTail);
@@ -37,12 +37,30 @@ class Player extends Phaser.GameObjects.Container {
         }
     }
 
+    public setTravelDirection = (direction: TravelDirection)  => {
+        const head = this.parts.getFirstAlive(); 
+        head.nextTravelDirection = direction;
+    }
+
     public movePlayer = () => {
+        // Always start with the head
+        let previousPart: PlayerPart = this.parts.getFirstAlive();
+
         this.parts.children.iterate((child: PlayerPart) => {
+            // Should we be changing direction?
+            child.directionOfTravel = child.nextTravelDirection || child.directionOfTravel;
+            
             const nextPosition = this.getNextGridPosition(child)
             this.grid.placeAtIndex(nextPosition, child);
             child.gridIndex = nextPosition;
-        })
+            
+            // See if the part in front of us is going a different way, and follow them
+            child.nextTravelDirection = previousPart.directionOfTravel;
+
+            // So any other parts can follow us
+            previousPart = child;
+        });
+
     }
 
     private getNextGridPosition = (part: PlayerPart): number => {
