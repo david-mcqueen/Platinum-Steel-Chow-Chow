@@ -6,17 +6,19 @@ import TravelDirection from "../enums/TravelDirection";
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
+    private gameConfig: Phaser.Core.Config;
 
 
-    constructor(startIndex: number, length: number, direction: number, scene: Phaser.Scene, grid: AlignGrid, gameConfig: Phaser.Core.Config) {
+    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gameConfig: Phaser.Core.Config) {
         super(scene);
 
         this.scene = scene;
         this.parts = this.scene.add.group();
         this.grid = grid;
+        this.gameConfig = gameConfig;
 
         const rectHead = this.scene.add.rectangle(0, 0, 100, 100, 0xffffff) as PlayerPart;
-        Align.scaleToGameW(rectHead, 0.05, gameConfig)
+        Align.scaleToGameW(rectHead, 0.04, gameConfig)
         grid.placeAtIndex(startIndex, rectHead);
         
         rectHead.gridIndex = startIndex;
@@ -26,15 +28,57 @@ class Player extends Phaser.GameObjects.Container {
 
         for (let index = 1; index < length; index++) {
             const rectTail = this.scene.add.rectangle(0, 0, 100, 100, 0xffffff) as PlayerPart;
-            Align.scaleToGameW(rectTail, 0.05, gameConfig)
+            Align.scaleToGameW(rectTail, 0.04, gameConfig)
             const positionTail = startIndex - index;
             rectTail.gridIndex = positionTail;
-            rectTail.directionOfTravel = TravelDirection.RIGHT;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
 
-            this.parts.add(rectTail);
-            
+            this.parts.add(rectTail);       
         }
+    }
+
+    private addTailPiece: boolean;
+
+    private addPendingTailPieces = () => {
+
+        if (!this.addTailPiece){
+            return;
+        }
+
+        debugger;
+        this.addTailPiece = false;
+        const lastChild = this.parts.getChildren()[this.parts.getLength() - 1] as PlayerPart;
+
+        const rectTail = this.scene.add.rectangle(0, 0, 100, 100, 0xffffff) as PlayerPart;
+        Align.scaleToGameW(rectTail, 0.04, this.gameConfig)
+        rectTail.gridIndex = lastChild.gridIndex; // the position of what we are going to follow
+        rectTail.directionOfTravel = lastChild.directionOfTravel;
+
+        // Calculate the starting position by going int eh opposite direction of current travel
+        rectTail.directionOfTravel = this.getOpposingDirection(lastChild.directionOfTravel)
+        rectTail.gridIndex = this.getNextGridPosition(rectTail);
+        rectTail.directionOfTravel = this.getOpposingDirection(rectTail.directionOfTravel);// Besure to reset travel direction
+
+        this.grid.placeAtIndex(rectTail.gridIndex, rectTail);
+        this.parts.add(rectTail);
+    }
+
+
+    private getOpposingDirection = (direction: TravelDirection): TravelDirection => {
+        switch (direction) {
+            case TravelDirection.UP:
+                return TravelDirection.DOWN;
+            case TravelDirection.DOWN:
+                return TravelDirection.UP;
+            case TravelDirection.LEFT:
+                return TravelDirection.RIGHT;
+            case TravelDirection.RIGHT:
+                return TravelDirection.LEFT;
+        }
+    }
+
+    public queuePieceAddition = () => {
+        this.addTailPiece = true;
     }
 
     public setTravelDirection = (direction: TravelDirection)  => {
@@ -48,7 +92,7 @@ class Player extends Phaser.GameObjects.Container {
 
         this.parts.children.iterate((child: PlayerPart) => {
             // Should we be changing direction?
-            child.directionOfTravel = child.nextTravelDirection || child.directionOfTravel;
+            child.directionOfTravel = child.nextTravelDirection || child.directionOfTravel || previousPart.directionOfTravel;
             
             const nextPosition = this.getNextGridPosition(child)
             this.grid.placeAtIndex(nextPosition, child);
@@ -61,11 +105,13 @@ class Player extends Phaser.GameObjects.Container {
             previousPart = child;
         });
 
+        // After we have moved, add tail pieces
+        this.addPendingTailPieces();
     }
 
     private getNextGridPosition = (part: PlayerPart): number => {
-        const gameHeight = 20;
-        const gameWidth = 20;
+        const gameHeight = 25;
+        const gameWidth = 25;
 
         switch (part.directionOfTravel){
             case TravelDirection.RIGHT:{

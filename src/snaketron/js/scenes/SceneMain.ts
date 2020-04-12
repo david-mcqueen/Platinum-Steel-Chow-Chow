@@ -21,14 +21,14 @@ class SceneMain extends Phaser.Scene {
 
     create(){
         const gridConfig: IGridConfig = {
-            rows: 20,
-            columns: 20,
+            rows: 25,
+            columns: 25,
             scene: this
         };
         this.grid = new AlignGrid(gridConfig, this.game.config);
         this.grid.debug();
 
-        this.player = new Player(90, 5, 0, this, this.grid, this.game.config);
+        this.player = new Player(90, 5, this, this.grid, this.game.config);
         this.previousTime = this.game.getTime();
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -56,6 +56,11 @@ class SceneMain extends Phaser.Scene {
         }
         if(this.cursorKeys.right.isDown){
             this.player.setTravelDirection(TravelDirection.RIGHT);
+        }
+
+        // DEBUG:- Add tail piece
+        if(this.cursorKeys.space.isDown){
+            this.player.queuePieceAddition();
         }
     }
 

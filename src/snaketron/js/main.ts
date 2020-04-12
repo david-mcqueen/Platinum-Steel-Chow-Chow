@@ -15,7 +15,7 @@ const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     scale: {
         width: 480,
-        height: 640,
+        height: 480,
     },
     parent: 'div-phaser-game',
     scene: [SceneTitle, SceneMain, SceneOver]

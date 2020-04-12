@@ -11,7 +11,7 @@ import AlignGrid from '../../../toolbox/js/classes/util/AlignGrid';
 
 import buttonOrangeRoundImg from '../../../toolbox/images/ui/buttons/round/orange.png';
 import buttonGreenRoundImg from '../../../toolbox/images/ui/buttons/round/green.png';
-import FlatButton from '../../../toolbox/js/classes/ui/FlatButton';
+import FlatButton from '../../../toolbox/js/classes/ui/FlatButton'; 
 import Constants from '../../../toolbox/js/Constants';
 import { emitter, model } from '../main';
 import IMediaManagerConfig from '../../../toolbox/js/classes/IMediaManagerConfig';
