@@ -2,6 +2,7 @@ import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Player from "../classes/Player";
 import TravelDirection from "../enums/TravelDirection";
+import Align from "../../../toolbox/js/classes/util/align";
 
 class SceneMain extends Phaser.Scene {
     private grid: AlignGrid;
@@ -10,6 +11,8 @@ class SceneMain extends Phaser.Scene {
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
     private gameSpeed: number = 1000; // ms between moving the player
+
+    private gridConfig: IGridConfig;
 
     constructor(){
         super('SceneMain');
@@ -20,30 +23,32 @@ class SceneMain extends Phaser.Scene {
     }
 
     create(){
-        const gridConfig: IGridConfig = {
+        this.gridConfig = {
             rows: 25,
             columns: 25,
             scene: this
         };
-        this.grid = new AlignGrid(gridConfig, this.game.config);
-        this.grid.debug();
-
+        this.grid = new AlignGrid(this.gridConfig, this.game.config);
+        // this.grid.debug();
+        
         this.player = new Player(90, 5, this, this.grid, this.game.config);
         this.previousTime = this.game.getTime();
-
+        
         this.cursorKeys = this.input.keyboard.createCursorKeys();
+        this.shouldAddFood = true;
     }
 
     update(time: number, delta: number) {
 
-        // If the last element, then remove it?
-        // Need to update the direction of travel every iteration?
+        // Only move if we have hit the epoch 
         if(Math.floor(time) - this.gameSpeed > this.previousTime) {
             console.log("updating");
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
+            this.addPendingFood();
         }
 
+        // User can tell it to change direction whenever they want
         if(this.cursorKeys.up.isDown){
             console.log("going up");
             this.player.setTravelDirection(TravelDirection.UP);
@@ -62,6 +67,25 @@ class SceneMain extends Phaser.Scene {
         if(this.cursorKeys.space.isDown){
             this.player.queuePieceAddition();
         }
+
+        // DEBUG:- Add food piece
+        if(this.cursorKeys.shift.isDown){
+            this.shouldAddFood = true;
+        }
+    }
+
+    private shouldAddFood: boolean = false;
+
+    private addPendingFood = () => {
+        if (!this.shouldAddFood){
+            return;
+        }
+        this.shouldAddFood = false;
+        const placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
+        const food = this.add.rectangle(0, 0, 100, 100, 0xffffff);
+
+        Align.scaleToGameW(food, 0.02, this.game.config);
+        this.grid.placeAtIndex(placement, food);
     }
 
 }
