@@ -45,7 +45,6 @@ class Player extends Phaser.GameObjects.Container {
             return;
         }
 
-        debugger;
         this.addTailPiece = false;
         const lastChild = this.parts.getChildren()[this.parts.getLength() - 1] as PlayerPart;
 
