@@ -1,11 +1,11 @@
 {
-  "name": "helloworld",
+  "name": "Snaketron",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": { 
-    "build": "webpack", 
-    "dev": "webpack-dev-server" 
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack && webpack-dev-server"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
+    "file-loader": "^6.0.0",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",

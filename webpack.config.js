@@ -2,9 +2,11 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const source = `snaketron`;
+
 module.exports = {
   entry: {
-    app: './src/main.ts',
+    app: `./src/${source}/js/main.ts`,
     vendors: ['phaser']
   },
 
@@ -14,7 +16,16 @@ module.exports = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
-      }
+      },
+      {
+        test: /\.(png|jp(e*)g|svg|mp3|ogg)$/,  
+        use: [{
+            loader: 'file-loader',
+            options: { 
+                name: 'images/[hash]-[name].[ext]'
+            } 
+        }]
+    }
     ]
   },
 
