@@ -1,6 +1,7 @@
 import PlayerPart from "./PlayerPart";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Align from "../../../toolbox/js/classes/util/align";
+import TravelDirection from "../enums/TravelDirection";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
@@ -19,6 +20,7 @@ class Player extends Phaser.GameObjects.Container {
         grid.placeAtIndex(startIndex, rectHead);
         
         rectHead.gridIndex = startIndex;
+        rectHead.directionOfTravel = TravelDirection.DOWN;
         this.parts.add(rectHead);
 
 
@@ -27,6 +29,7 @@ class Player extends Phaser.GameObjects.Container {
             Align.scaleToGameW(rectTail, 0.05, gameConfig)
             const positionTail = startIndex - index;
             rectTail.gridIndex = positionTail;
+            rectTail.directionOfTravel = TravelDirection.DOWN;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
 
             this.parts.add(rectTail);
@@ -43,13 +46,41 @@ class Player extends Phaser.GameObjects.Container {
     }
 
     private getNextGridPosition = (part: PlayerPart): number => {
+        const gameHeight = 20;
+        const gameWidth = 20;
 
-        let nextPosition =  part.gridIndex + 1;
-        if (Math.floor(nextPosition / 20) > Math.floor(part.gridIndex / 20)){
-            nextPosition = Math.floor(part.gridIndex / 20) * 20;
+        switch (part.directionOfTravel){
+            case TravelDirection.RIGHT:{
+                let nextPosition =  part.gridIndex + 1;
+                if (Math.floor(nextPosition / gameWidth) > Math.floor(part.gridIndex / gameWidth)){
+                    nextPosition -= gameWidth;
+                }
+                return nextPosition;
+            }
+            case TravelDirection.DOWN: {
+                let nextPosition =  part.gridIndex + gameHeight;
+
+                if (Math.floor(nextPosition / gameHeight) >= gameHeight){
+                    nextPosition -= gameHeight * gameWidth;
+                }
+                return nextPosition;
+            }
+            case TravelDirection.UP: {
+                let nextPosition =  part.gridIndex - gameHeight;
+
+                if (Math.floor(nextPosition / gameHeight) < 0){
+                    nextPosition += gameHeight * gameWidth;
+                }
+                return nextPosition;
+            }
+            case TravelDirection.LEFT: {
+                let nextPosition =  part.gridIndex - 1;
+                if (Math.floor(nextPosition / gameWidth) < Math.floor(part.gridIndex / gameWidth)){
+                    nextPosition += gameWidth;
+                }
+                return nextPosition;
+            }
         }
-
-        return nextPosition;
     }
 }
 

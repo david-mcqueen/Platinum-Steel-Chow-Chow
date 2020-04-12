@@ -38,7 +38,6 @@ class SceneMain extends Phaser.Scene {
             console.log("updating");
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
-
         }
     }
 

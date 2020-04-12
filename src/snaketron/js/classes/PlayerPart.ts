@@ -1,5 +1,7 @@
+import TravelDirection from "../enums/TravelDirection";
+
 class PlayerPart extends Phaser.GameObjects.Rectangle {
-    public directionOfTravel: any; // TODO:- 
+    public directionOfTravel: TravelDirection;
     public gridIndex: number;
 }
 
