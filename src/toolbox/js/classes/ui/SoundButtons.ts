@@ -20,7 +20,7 @@ class SoundButtons extends Phaser.GameObjects.Container {
             event: Constants.TOGGLE_MUSIC,
             x: 240,
             y: 450
-        }, this.model);
+        }, this.model.emitter);
 
         const sfxToggleButton = new ToggleButton({
             gameConfig: config.gameConfig,
@@ -32,7 +32,7 @@ class SoundButtons extends Phaser.GameObjects.Container {
             event: Constants.TOGGLE_SFX,
             x: 240,
             y: 450
-        }, this.model);
+        }, this.model.emitter);
 
         this.add(musicToggleButton);
         this.add(sfxToggleButton);

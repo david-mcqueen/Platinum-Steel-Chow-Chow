@@ -3,6 +3,7 @@ import SceneTitle from './scenes/SceneTitle';
 import SceneMain from './scenes/SceneMain';
 import SceneOver from './scenes/SceneOver';
 import Model from '../../toolbox/js/classes/ModelController/Model';
+import Controller from '../../toolbox/js/classes/ModelController/Controller';
 
 let isMobile = navigator.userAgent.indexOf(`Mobile`);
 if (isMobile == -1){
@@ -33,4 +34,5 @@ const gameConfig_Mobile: Phaser.Types.Core.GameConfig = {
 
 export const emitter = new Phaser.Events.EventEmitter();
 export const model = new Model(isMobile > -1, emitter);
+export const controller = new Controller(model);
 export const game = new Phaser.Game(isMobile > -1 ? gameConfig_Mobile : gameConfig_Desktop);
