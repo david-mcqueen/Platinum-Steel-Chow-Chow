@@ -82,14 +82,15 @@ class SceneMain extends Phaser.Scene {
     }
 
     private checkPlayerCollision = () => {
-        const head = this.player.head;
+        const headIndex = this.player.currentPlayersHeadPosition;
 
-        if (this.food && head){
-            if (head.gridIndex == this.food.gridIndex){
+        if (this.food && headIndex){
+            if (headIndex == this.food.gridIndex){
                 // OM NOM NOM NOM
                 this.removeFoodItem(this.food);
                 this.player.queuePieceAddition();
                 this.shouldAddFood = true;
+                emitter.emit(Constants.UP_POINTS, 1);
             }
         }
     }
@@ -100,13 +101,29 @@ class SceneMain extends Phaser.Scene {
         food.destroy();
     }
 
+    private getRandomIndex = (): number => {
+        let placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
+
+        const occupiedSpace = this.player.playersCurrentFullPosition;
+
+        // Keep going until we find an available index
+        // TODO:- What if there are NO available squares? There will be a better way to do this to consciously look instead
+        // of recursively drilling until we hit something. TODO:- 
+        if (occupiedSpace.indexOf(placement) > -1){
+            return this.getRandomIndex();
+        }
+
+        return placement;
+    }
+
     private addPendingFood = () => {
         if (!this.shouldAddFood){
             return;
         }
         this.shouldAddFood = false;
-        const placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
         const food = this.add.rectangle(0, 0, 100, 100, 0xffffff) as Food;
+        
+        const placement = this.getRandomIndex();
         
         Align.scaleToGameW(food, 0.02, this.game.config);
         this.grid.placeAtIndex(placement, food);

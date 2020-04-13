@@ -7,9 +7,21 @@ class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
     private gameConfig: Phaser.Core.Config;
+    private addTailPiece: boolean;
 
     get head(): PlayerPart {
         return this.parts.getFirstAlive();
+    }
+
+    get currentPlayersHeadPosition(): number {
+        return this.head.gridIndex;
+    }
+
+    get playersCurrentFullPosition(): number[] {
+        // Return an array with the current index of all parts
+        return this.parts.children.getArray().map( (part: PlayerPart) => {
+            return part.gridIndex;
+        });
     }
 
     constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gameConfig: Phaser.Core.Config) {
@@ -39,8 +51,6 @@ class Player extends Phaser.GameObjects.Container {
             this.parts.add(rectTail);       
         }
     }
-
-    private addTailPiece: boolean;
 
     private addPendingTailPieces = () => {
 
