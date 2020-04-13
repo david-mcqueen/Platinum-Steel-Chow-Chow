@@ -56,7 +56,9 @@ class SceneMain extends Phaser.Scene {
         this.player = new Player(90, 5, this, this.grid, this.game.config);
 
         // Cameras
+        this.cameras.main.setBounds(0, 0, +this.game.config.width, +this.game.config.height);
         this.cameras.main.startFollow(this.player.head, true);
+        this.cameras.main.setLerp(0.1, 0.1)
         this.cameras.main.setZoom(1.25); // 1 = 100%
         
         // TODO:- Control the zoom level?
