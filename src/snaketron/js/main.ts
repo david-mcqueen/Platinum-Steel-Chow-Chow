@@ -14,8 +14,8 @@ const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
     title: 'SnakeTron',
     type: Phaser.AUTO,
     scale: {
-        width: 480,
-        height: 480,
+        width: 1000,
+        height: 1000,
     },
     transparent: true,
     backgroundColor: '#000000',

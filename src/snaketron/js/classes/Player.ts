@@ -3,10 +3,12 @@ import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Align from "../../../toolbox/js/classes/util/align";
 import TravelDirection from "../enums/TravelDirection";
 import { game } from "../main";
+import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
+    private gridConfig: IGridConfig;
     private gameConfig: Phaser.Core.Config;
     private addTailPiece: boolean;
     private _isDead: boolean = false;
@@ -36,16 +38,17 @@ class Player extends Phaser.GameObjects.Container {
         return fullPosition;
     }
 
-    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gameConfig: Phaser.Core.Config) {
+    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig, gameConfig: Phaser.Core.Config) {
         super(scene);
 
         this.scene = scene;
         this.parts = this.scene.add.group();
         this.grid = grid;
+        this.gridConfig = gridConfig;
         this.gameConfig = gameConfig;
 
-        const rectHead = this.scene.add.rectangle(0, 0, 100, 100, 0xffffff) as PlayerPart;
-        Align.scaleToGameW(rectHead, 0.04, gameConfig)
+        const rectHead = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
+        // Align.scaleToGameW(rectHead, 0.04, gameConfig)
         grid.placeAtIndex(startIndex, rectHead);
         
         rectHead.gridIndex = startIndex;
@@ -54,8 +57,8 @@ class Player extends Phaser.GameObjects.Container {
 
 
         for (let index = 1; index < length; index++) {
-            const rectTail = this.scene.add.rectangle(0, 0, 100, 100, 0xffffff) as PlayerPart;
-            Align.scaleToGameW(rectTail, 0.04, gameConfig)
+            const rectTail = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
+            // Align.scaleToGameW(rectTail, 0.04, gameConfig)
             const positionTail = startIndex - index;
             rectTail.gridIndex = positionTail;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
@@ -73,8 +76,8 @@ class Player extends Phaser.GameObjects.Container {
         this.addTailPiece = false;
         const lastChild = this.parts.getChildren()[this.parts.getLength() - 1] as PlayerPart;
 
-        const rectTail = this.scene.add.rectangle(0, 0, 100, 100, 0xffffff) as PlayerPart;
-        Align.scaleToGameW(rectTail, 0.04, this.gameConfig)
+        const rectTail = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
+        // Align.scaleToGameW(rectTail, 0.04, this.gameConfig)
         rectTail.gridIndex = lastChild.gridIndex; // the position of what we are going to follow
         rectTail.directionOfTravel = lastChild.directionOfTravel;
 
@@ -150,37 +153,37 @@ class Player extends Phaser.GameObjects.Container {
     }
 
     private getNextGridPosition = (part: PlayerPart): number => {
-        const gameHeight = 25;
-        const gameWidth = 25;
+        const rows = this.gridConfig.rows;
+        const columns = this.gridConfig.columns;
 
         switch (part.directionOfTravel){
             case TravelDirection.RIGHT:{
                 let nextPosition =  part.gridIndex + 1;
-                if (Math.floor(nextPosition / gameWidth) > Math.floor(part.gridIndex / gameWidth)){
-                    nextPosition -= gameWidth;
+                if (Math.floor(nextPosition / columns) > Math.floor(part.gridIndex / columns)){
+                    nextPosition -= columns;
                 }
                 return nextPosition;
             }
             case TravelDirection.DOWN: {
-                let nextPosition =  part.gridIndex + gameHeight;
+                let nextPosition =  part.gridIndex + rows;
 
-                if (Math.floor(nextPosition / gameHeight) >= gameHeight){
-                    nextPosition -= gameHeight * gameWidth;
+                if (Math.floor(nextPosition / rows) >= rows){
+                    nextPosition -= rows * columns;
                 }
                 return nextPosition;
             }
             case TravelDirection.UP: {
-                let nextPosition =  part.gridIndex - gameHeight;
+                let nextPosition =  part.gridIndex - rows;
 
-                if (Math.floor(nextPosition / gameHeight) < 0){
-                    nextPosition += gameHeight * gameWidth;
+                if (Math.floor(nextPosition / rows) < 0){
+                    nextPosition += rows * columns;
                 }
                 return nextPosition;
             }
             case TravelDirection.LEFT: {
                 let nextPosition =  part.gridIndex - 1;
-                if (Math.floor(nextPosition / gameWidth) < Math.floor(part.gridIndex / gameWidth)){
-                    nextPosition += gameWidth;
+                if (Math.floor(nextPosition / columns) < Math.floor(part.gridIndex / columns)){
+                    nextPosition += columns;
                 }
                 return nextPosition;
             }

@@ -11,6 +11,10 @@ import Constants from "../../../toolbox/js/Constants";
 import backgroundImg from '../../images/background.jpg';
 
 class SceneMain extends Phaser.Scene {
+
+    private gridCellHeight: number = 20;
+    private gridCellWidth: number = 20;
+
     private grid: AlignGrid;
     private player: Player;
     private previousTime: number = 0;
@@ -37,31 +41,32 @@ class SceneMain extends Phaser.Scene {
     create(){
         this.back = this.add.image(0, 0, 'background');
         this.back.setOrigin(0, 0);
-        Align.scaleToGameW(this.back, 1, this.game.config);
+        debugger;
+
+        const columns = +this.game.config.width / this.gridCellWidth;
+        const rows = +this.game.config.height / this.gridCellHeight;
 
         // Grid
         this.gridConfig = {
-            rows: 25,
-            columns: 25,
+            rows: rows,
+            columns: columns,
             scene: this
         };
+        
         this.grid = new AlignGrid(this.gridConfig, this.game.config);
         
-        
         // Score Box
-        this.scoreBox = new ScoreBox({scene: this, x: 420, y: 75, originX: 1, originY: 1}, model); // 1.25 zoom // TODO:- Calculate
-        // this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
+        this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
 
         // Player
-        this.player = new Player(90, 5, this, this.grid, this.game.config);
+        this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.game.config);
 
         // Cameras
         this.cameras.main.setBounds(0, 0, +this.game.config.width, +this.game.config.height);
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
-        this.cameras.main.setZoom(1.25); // 1 = 100%
-        
-        // TODO:- Control the zoom level?
+        this.cameras.main.setViewport((+this.game.config.width - 500) / 2, (+this.game.config.height - 500) / 2, 500, 500);
+
 
         this.previousTime = this.game.getTime();
         
@@ -169,11 +174,11 @@ class SceneMain extends Phaser.Scene {
             return;
         }
         this.shouldAddFood = false;
-        const food = this.add.rectangle(0, 0, 100, 100, 0xffffff) as Food;
+        const food = this.add.rectangle(0, 0, 10, 10, 0xffffff) as Food;
         
         const placement = this.getRandomIndex();
         
-        Align.scaleToGameW(food, 0.02, this.game.config);
+        // Align.scaleToGameW(food, 0.02, this.game.config);
         this.grid.placeAtIndex(placement, food);
         food.gridIndex = placement;
         this.food = food;
