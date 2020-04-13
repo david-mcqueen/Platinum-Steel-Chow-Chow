@@ -107,7 +107,11 @@ class Player extends Phaser.GameObjects.Container {
 
     public setTravelDirection = (direction: TravelDirection)  => {
         const head = this.parts.getFirstAlive(); 
-        head.nextTravelDirection = direction;
+
+        // Check we cant turn back on ourselves
+        if(this.getOpposingDirection(head.directionOfTravel) !== direction){
+            head.nextTravelDirection = direction;
+        }
     }
 
     public movePlayer = () => {
