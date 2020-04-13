@@ -72,7 +72,7 @@ class SceneMain extends Phaser.Scene {
         
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.shouldAddFood = true;
-        
+
         // this.grid.debug();
     }
 
@@ -90,6 +90,7 @@ class SceneMain extends Phaser.Scene {
             this.checkPlayerCollision();
 
             this.addPendingFood();
+            this.getAngleToFood();
         }
 
         // User can tell it to change direction whenever they want
@@ -115,6 +116,18 @@ class SceneMain extends Phaser.Scene {
         if(this.cursorKeys.shift.isDown){
             this.shouldAddFood = true;
         }
+    }
+
+    private getAngleToFood = () => {
+        const head = this.player.head;
+        const food = this.food;
+        const angleRadian = Phaser.Math.Angle.Between(head.x, head.y, food.x, food.y);
+        const angleDeg = angleRadian * 180 / Math.PI
+        console.log(angleDeg + 90);
+        // 0 = up
+        // 90 = right
+        // 180 = down
+        // 270 = left
     }
 
     private checkPlayerCollision = () => {
