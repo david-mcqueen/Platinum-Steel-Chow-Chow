@@ -54,10 +54,13 @@ class SceneMain extends Phaser.Scene {
     }
 
     update(time: number, delta: number) {
+        if (this.player.isDead){
+            return;
+        }
 
         // Only move if we have hit the epoch 
         if(Math.floor(time) - this.gameSpeed > this.previousTime) {
-            console.log("updating");
+
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
             
@@ -68,7 +71,6 @@ class SceneMain extends Phaser.Scene {
 
         // User can tell it to change direction whenever they want
         if(this.cursorKeys.up.isDown){
-            console.log("going up");
             this.player.setTravelDirection(TravelDirection.UP);
         }
         if(this.cursorKeys.down.isDown){
@@ -95,7 +97,13 @@ class SceneMain extends Phaser.Scene {
     private checkPlayerCollision = () => {
         const headIndex = this.player.currentPlayersHeadPosition;
 
-        if (this.food && headIndex){
+        this.checkPlayerCollisionWithFood(headIndex);
+        this.checkPlayerCollisionWithSelfSnake(headIndex, this.player.positionWithoutHead)
+    }
+
+    // Check if the player has collided with food, and eat it if necessary
+    private checkPlayerCollisionWithFood = (headIndex: number) => {
+        if (this.food && headIndex > -1){
             if (headIndex == this.food.gridIndex){
                 // OM NOM NOM NOM
                 this.removeFoodItem(this.food);
@@ -103,6 +111,16 @@ class SceneMain extends Phaser.Scene {
                 this.shouldAddFood = true;
                 emitter.emit(Constants.UP_POINTS, 1);
             }
+        }
+    }
+
+    private checkPlayerCollisionWithSelfSnake = (headIndex: number, snake: number[])  => {
+        if(snake.indexOf(headIndex) > -1){
+            // uh oh! We dead.
+            this.player.kill(() => {
+                // Have finished animating the player
+                this.scene.start("SceneOver");
+            });
         }
     }
 
@@ -115,7 +133,7 @@ class SceneMain extends Phaser.Scene {
     private getRandomIndex = (): number => {
         let placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
 
-        const occupiedSpace = this.player.playersCurrentFullPosition;
+        const occupiedSpace = this.player.fullPosition;
 
         // Keep going until we find an available index
         // TODO:- What if there are NO available squares? There will be a better way to do this to consciously look instead

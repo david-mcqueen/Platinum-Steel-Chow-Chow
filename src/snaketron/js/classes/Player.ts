@@ -2,12 +2,18 @@ import PlayerPart from "./PlayerPart";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Align from "../../../toolbox/js/classes/util/align";
 import TravelDirection from "../enums/TravelDirection";
+import { game } from "../main";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
     private gameConfig: Phaser.Core.Config;
     private addTailPiece: boolean;
+    private _isDead: boolean = false;
+
+    get isDead(): boolean {
+        return this._isDead;
+    }
 
     get head(): PlayerPart {
         return this.parts.getFirstAlive();
@@ -17,11 +23,17 @@ class Player extends Phaser.GameObjects.Container {
         return this.head.gridIndex;
     }
 
-    get playersCurrentFullPosition(): number[] {
+    get fullPosition(): number[] {
         // Return an array with the current index of all parts
         return this.parts.children.getArray().map( (part: PlayerPart) => {
             return part.gridIndex;
         });
+    }
+
+    get positionWithoutHead(): number[] {
+        const fullPosition = this.fullPosition;
+        fullPosition.shift()
+        return fullPosition;
     }
 
     constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gameConfig: Phaser.Core.Config) {
@@ -119,6 +131,18 @@ class Player extends Phaser.GameObjects.Container {
 
         // After we have moved, add tail pieces
         this.addPendingTailPieces();
+    }
+
+    public kill = (callback: any) => {
+        this._isDead = true;
+        this.scene.tweens.add({
+            targets: this.parts.getChildren(),
+            duration: 1000,
+            y: game.config.height,
+            angle: -270,
+            onComplete: callback,
+            completeDelay: 1000
+        })
     }
 
     private getNextGridPosition = (part: PlayerPart): number => {
