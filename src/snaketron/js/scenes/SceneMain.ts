@@ -4,12 +4,16 @@ import Player from "../classes/Player";
 import TravelDirection from "../enums/TravelDirection";
 import Align from "../../../toolbox/js/classes/util/align";
 import Food from "../classes/Food";
+import ScoreBox from "../../../toolbox/js/classes/components/ScoreBox";
+import { model, emitter } from "../main";
+import Constants from "../../../toolbox/js/Constants";
 
 class SceneMain extends Phaser.Scene {
     private grid: AlignGrid;
     private player: Player;
     private previousTime: number = 0;
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
+    private scoreBox: ScoreBox;
 
     private gameSpeed: number = 500; // ms between moving the player
 
@@ -27,19 +31,26 @@ class SceneMain extends Phaser.Scene {
     }
 
     create(){
+        // Grid
         this.gridConfig = {
             rows: 25,
             columns: 25,
             scene: this
         };
         this.grid = new AlignGrid(this.gridConfig, this.game.config);
-        // this.grid.debug();
         
+        // Score Box
+        this.scoreBox = new ScoreBox({scene: this}, model);
+        this.grid.placeAtIndex(22, this.scoreBox);
+        
+        // Player
         this.player = new Player(90, 5, this, this.grid, this.game.config);
         this.previousTime = this.game.getTime();
         
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.shouldAddFood = true;
+        
+        // this.grid.debug();
     }
 
     update(time: number, delta: number) {
