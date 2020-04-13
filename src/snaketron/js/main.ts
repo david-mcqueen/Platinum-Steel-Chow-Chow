@@ -17,6 +17,8 @@ const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
         width: 480,
         height: 480,
     },
+    transparent: true,
+    backgroundColor: '#000000',
     parent: 'div-phaser-game',
     scene: [SceneTitle, SceneMain, SceneOver]
 };

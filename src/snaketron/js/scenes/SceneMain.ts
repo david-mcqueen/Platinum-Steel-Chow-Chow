@@ -8,6 +8,8 @@ import ScoreBox from "../../../toolbox/js/classes/components/ScoreBox";
 import { model, emitter } from "../main";
 import Constants from "../../../toolbox/js/Constants";
 
+import backgroundImg from '../../images/background.jpg';
+
 class SceneMain extends Phaser.Scene {
     private grid: AlignGrid;
     private player: Player;
@@ -22,15 +24,21 @@ class SceneMain extends Phaser.Scene {
 
     private food: Food;
 
+    private back: Phaser.GameObjects.Image;
+
     constructor(){
         super('SceneMain');
     }
 
     preload(){
-
+        this.load.image('background', backgroundImg);
     }
 
     create(){
+        this.back = this.add.image(0, 0, 'background');
+        this.back.setOrigin(0, 0);
+        Align.scaleToGameW(this.back, 1, this.game.config);
+
         // Grid
         this.gridConfig = {
             rows: 25,
@@ -39,12 +47,20 @@ class SceneMain extends Phaser.Scene {
         };
         this.grid = new AlignGrid(this.gridConfig, this.game.config);
         
-        // Score Box
-        this.scoreBox = new ScoreBox({scene: this}, model);
-        this.grid.placeAtIndex(22, this.scoreBox);
         
+        // Score Box
+        this.scoreBox = new ScoreBox({scene: this, x: 420, y: 75, originX: 1, originY: 1}, model); // 1.25 zoom // TODO:- Calculate
+        // this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
+
         // Player
         this.player = new Player(90, 5, this, this.grid, this.game.config);
+
+        // Cameras
+        this.cameras.main.startFollow(this.player.head, true);
+        this.cameras.main.setZoom(1.25); // 1 = 100%
+        
+        // TODO:- Control the zoom level?
+
         this.previousTime = this.game.getTime();
         
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -117,6 +133,7 @@ class SceneMain extends Phaser.Scene {
     private checkPlayerCollisionWithSelfSnake = (headIndex: number, snake: number[])  => {
         if(snake.indexOf(headIndex) > -1){
             // uh oh! We dead.
+            this.cameras.main.shake(250);
             this.player.kill(() => {
                 // Have finished animating the player
                 this.scene.start("SceneOver");
