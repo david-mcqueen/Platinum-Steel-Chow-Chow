@@ -21,7 +21,7 @@ class SceneMain extends Phaser.Scene {
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
     private scoreBox: ScoreBox;
 
-    private gameSpeed: number = 500; // ms between moving the player
+    private gameSpeed: number = 100; // ms between moving the player
 
     private gridConfig: IGridConfig;
     private shouldAddFood: boolean = false;
@@ -41,7 +41,7 @@ class SceneMain extends Phaser.Scene {
     create(){
         this.back = this.add.image(0, 0, 'background');
         this.back.setOrigin(0, 0);
-        debugger;
+        model.score = 0;
 
         const columns = +this.game.config.width / this.gridCellWidth;
         const rows = +this.game.config.height / this.gridCellHeight;
