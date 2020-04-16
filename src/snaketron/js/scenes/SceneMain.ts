@@ -83,7 +83,14 @@ class SceneMain extends Phaser.Scene {
         this.keyboardInput_H = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
         this.shouldAddFood = true;
 
+        emitter.off(Constants.FOOD_EATEN).on(Constants.FOOD_EATEN, this.foodEaten);
+
         // this.grid.debug();
+    }
+
+    private foodEaten = (food: Food) => {
+        this.removeFoodItem(food);
+        this.shouldAddFood = true;
     }
 
     update(time: number, delta: number) {
@@ -97,7 +104,7 @@ class SceneMain extends Phaser.Scene {
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
             
-            this.checkPlayerCollision();
+            this.player.checkPlayerCollision(this.food);
 
             this.addPendingFood();
             this.cameraManager.updateHints(this.player.head, this.food);
@@ -134,36 +141,7 @@ class SceneMain extends Phaser.Scene {
         }
     }
     
-    private checkPlayerCollision = () => {
-        const headIndex = this.player.currentPlayersHeadPosition;
-
-        this.checkPlayerCollisionWithFood(headIndex);
-        this.checkPlayerCollisionWithSelfSnake(headIndex, this.player.positionWithoutHead)
-    }
-
-    // Check if the player has collided with food, and eat it if necessary
-    private checkPlayerCollisionWithFood = (headIndex: number) => {
-        if (this.food && headIndex > -1){
-            if (headIndex == this.food.gridIndex){
-                // OM NOM NOM NOM
-                this.removeFoodItem(this.food);
-                this.player.queuePieceAddition();
-                this.shouldAddFood = true;
-                emitter.emit(Constants.UP_POINTS, 1);
-            }
-        }
-    }
-
-    private checkPlayerCollisionWithSelfSnake = (headIndex: number, snake: number[])  => {
-        if(snake.indexOf(headIndex) > -1){
-            // uh oh! We dead.
-            this.cameras.main.shake(250);
-            this.player.kill(() => {
-                // Have finished animating the player
-                this.scene.start("SceneOver");
-            });
-        }
-    }
+    
 
 
     // Can be made generic

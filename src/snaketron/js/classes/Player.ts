@@ -2,8 +2,10 @@ import PlayerPart from "./PlayerPart";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Align from "../../../toolbox/js/classes/util/align";
 import TravelDirection from "../enums/TravelDirection";
-import { game } from "../main";
+import { game, emitter } from "../main";
 import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
+import Food from "./Food";
+import Constants from "../../../toolbox/js/Constants";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
@@ -187,6 +189,38 @@ class Player extends Phaser.GameObjects.Container {
                 }
                 return nextPosition;
             }
+        }
+    }
+
+    public checkPlayerCollision = (foodTarget: Food) => {
+        const headIndex = this.currentPlayersHeadPosition;
+
+        this.checkPlayerCollisionWithFood(headIndex, foodTarget);
+        this.checkPlayerCollisionWithSelfSnake(headIndex, this.positionWithoutHead)
+    }
+
+    // Check if the player has collided with food, and eat it if necessary
+    private checkPlayerCollisionWithFood = (headIndex: number, foodTarget: Food) => {
+        if (foodTarget && headIndex > -1){
+            if (headIndex == foodTarget.gridIndex){
+                // OM NOM NOM NOM
+                this.queuePieceAddition();
+                
+                emitter.emit(Constants.FOOD_EATEN, foodTarget)
+                emitter.emit(Constants.UP_POINTS, 1);
+            }
+        }
+    }
+
+    private checkPlayerCollisionWithSelfSnake = (headIndex: number, snake: number[])  => {
+        if(snake.indexOf(headIndex) > -1){
+            // uh oh! We dead.
+            // Fire an event or sumin
+            // this.scene.camera.shake(250);
+            this.kill(() => {
+                // Have finished animating the player
+                this.scene.scene.start("SceneOver");
+            });
         }
     }
 }
