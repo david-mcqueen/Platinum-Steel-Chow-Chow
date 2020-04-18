@@ -1,12 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
-const source = `Snake3k`;
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: `./src/${source}/js/main.ts`,
+    main: `./src/Snake3k/js/main.ts`,
     vendors: ['phaser']
   },
 
@@ -48,6 +47,7 @@ module.exports = {
   },
 
   plugins: [
+    new CaseSensitivePathsPlugin(),
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, 'index.html'),
