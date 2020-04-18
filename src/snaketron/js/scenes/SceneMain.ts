@@ -2,7 +2,6 @@ import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import Player from "../classes/Player";
 import TravelDirection from "../enums/TravelDirection";
-import Align from "../../../toolbox/js/classes/util/align";
 import Food from "../classes/Food";
 import ScoreBox from "../../../toolbox/js/classes/components/ScoreBox";
 import { model, emitter } from "../main";

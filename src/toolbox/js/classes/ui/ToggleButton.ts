@@ -1,5 +1,5 @@
 import IToggleButtonConfig from "../../IToggleButtonConfig";
-import Align from "../util/align";
+import Align from "../util/Align";
 
 class ToggleButton extends Phaser.GameObjects.Container {
     private config: IToggleButtonConfig;

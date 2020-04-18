@@ -1,6 +1,6 @@
 import titleImg from '../../../toolbox/images/title.png';
 import AlignGrid from '../../../toolbox/js/classes/util/AlignGrid';
-import Align from '../../../toolbox/js/classes/util/align';
+import Align from '../../../toolbox/js/classes/util/Align';
 
 import buttonGreenRoundImg from '../../../toolbox/images/ui/buttons/round/green.png';
 import buttonOrangeRoundImg from '../../../toolbox/images/ui/buttons/round/orange.png';

@@ -1,6 +1,5 @@
 import PlayerPart from "./PlayerPart";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
-import Align from "../../../toolbox/js/classes/util/align";
 import TravelDirection from "../enums/TravelDirection";
 import { game, emitter } from "../main";
 import IGridConfig from "../../../toolbox/js/classes/IGridConfig";

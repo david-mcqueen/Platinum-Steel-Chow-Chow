@@ -6,7 +6,7 @@ import sfxOnIcon from '../../../toolbox/images/ui/icons/sfx_on.png';
 import musicOnIcon from '../../../toolbox/images/ui/icons/music_on.png';
 import musicOffIcon from '../../../toolbox/images/ui/icons/music_off.png';
 
-import Align from '../../../toolbox/js/classes/util/align';
+import Align from '../../../toolbox/js/classes/util/Align';
 import AlignGrid from '../../../toolbox/js/classes/util/AlignGrid';
 
 import buttonOrangeRoundImg from '../../../toolbox/images/ui/buttons/round/orange.png';
