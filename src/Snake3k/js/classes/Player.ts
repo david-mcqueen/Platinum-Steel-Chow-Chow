@@ -49,6 +49,7 @@ class Player extends Phaser.GameObjects.Container {
         this.gameConfig = gameConfig;
 
         const rectHead = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
+        rectHead.setDepth(100);
         // Align.scaleToGameW(rectHead, 0.04, gameConfig)
         grid.placeAtIndex(startIndex, rectHead);
         
@@ -64,6 +65,7 @@ class Player extends Phaser.GameObjects.Container {
             rectTail.gridIndex = positionTail;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
 
+            rectTail.setDepth(100);
             this.parts.add(rectTail);       
         }
     }
@@ -86,6 +88,8 @@ class Player extends Phaser.GameObjects.Container {
         rectTail.directionOfTravel = this.getOpposingDirection(lastChild.directionOfTravel)
         rectTail.gridIndex = this.getNextGridPosition(rectTail);
         rectTail.directionOfTravel = this.getOpposingDirection(rectTail.directionOfTravel);// Besure to reset travel direction
+
+        rectTail.setDepth(100);
 
         this.grid.placeAtIndex(rectTail.gridIndex, rectTail);
         this.parts.add(rectTail);

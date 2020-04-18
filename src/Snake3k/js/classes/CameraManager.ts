@@ -140,6 +140,7 @@ class CameraManager extends Phaser.GameObjects.Container {
             hintRect.EndDeg = hint.endDeg;
             hintRect.goToBounds = hint.bounds;
             hintRect.setVisible(false);
+            hintRect.setDepth(10000);
             this.cameraHints.add(hintRect);
         });
     }

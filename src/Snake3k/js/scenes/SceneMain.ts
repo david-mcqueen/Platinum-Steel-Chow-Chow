@@ -124,6 +124,7 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc = graphics.arc(x, y, radius, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), true);
 
+        this.graphicsarc.setDepth(1000);
         graphics.strokePath();
         this.grid.placeAtIndex(1225, this.graphicsarc)
     }
@@ -133,6 +134,7 @@ class SceneMain extends Phaser.Scene {
             return;
         }
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
+        this.portal.setDepth(1000);
         this.grid.placeAtIndex(1225, this.portal);
         this.drawPortalBorder(0, 0, 100);
         
