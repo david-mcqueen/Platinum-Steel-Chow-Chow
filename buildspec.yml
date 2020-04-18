@@ -1,0 +1,22 @@
+version: 0.2
+
+phase:
+  install: 
+    commands:
+      - echo install Node 12...
+      - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+      - apt-get install -y nodejs
+      # install yarn ???
+  pre_build:
+    commands:
+      - echo install deps...
+      - npm i
+  build:
+    commands:
+    - echo building ...
+    - npm run build
+artifacts:
+  files:
+    - "**/*"
+  discard-paths: no
+  base-directory: dist
