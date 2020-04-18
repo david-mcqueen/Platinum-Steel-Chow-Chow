@@ -111,17 +111,38 @@ class SceneMain extends Phaser.Scene {
         // TODO:- TRANSITION
     }
 
+    private graphicsarc: Phaser.GameObjects.Graphics;
+
+    private drawPortalBorder = (x: number, y: number, radius: number) => {
+
+        if (this.graphicsarc){
+            this.graphicsarc.destroy();
+        }
+        var graphics = this.add.graphics();
+        graphics.lineStyle(2, 0xfae400, 0.3);
+        graphics.beginPath();
+
+        this.graphicsarc = graphics.arc(x, y, radius, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), true);
+
+        graphics.strokePath();
+        this.grid.placeAtIndex(1225, this.graphicsarc)
+    }
+
     private addPortal = () => {
         if (this.portal){
             return;
         }
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
         this.grid.placeAtIndex(1225, this.portal);
+        this.drawPortalBorder(0, 0, 100);
+        
     }
 
     private growPortal = () => {
 
         this.portal.radius = this.portal.radius * 1.125;
+
+        this.drawPortalBorder(0, 0, this.portal.radius);
     }
 
     private foodEaten = (food: Food) => {
