@@ -1,6 +1,6 @@
 version: 0.2
 
-phase:
+phases:
   install: 
     commands:
       - echo install Node 12...
@@ -10,6 +10,7 @@ phase:
   pre_build:
     commands:
       - echo install deps...
+      - sudo rm -rf ./dist
       - npm i
   build:
     commands:
