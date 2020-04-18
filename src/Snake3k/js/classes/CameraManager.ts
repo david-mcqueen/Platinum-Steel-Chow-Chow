@@ -183,7 +183,6 @@ class CameraManager extends Phaser.GameObjects.Container {
     public updateHints = (playerHead: Phaser.GameObjects.Shape, target: Phaser.GameObjects.Shape) => {
         
         if (!this.objectInCameraViewport(target)){  
-            console.log('in viewport')
             this.highlightCameraHint(this.getAngleToTarget(playerHead, target));
         }else {
             this.showCameraHints(false);
