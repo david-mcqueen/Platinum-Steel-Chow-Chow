@@ -10,7 +10,7 @@ phases:
   pre_build:
     commands:
       - echo install deps...
-      - sudo rm -rf ./dist
+      - rm -rf dist
       - npm i
   build:
     commands:
