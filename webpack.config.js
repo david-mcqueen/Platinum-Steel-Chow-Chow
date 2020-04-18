@@ -5,7 +5,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = {
   entry: {
-    main: `./src/Snake3k/js/main.ts`,
+    app: `./src/Snake3k/js/main.ts`,
     vendors: ['phaser']
   },
 
