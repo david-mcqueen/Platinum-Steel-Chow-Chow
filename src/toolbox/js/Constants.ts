@@ -3,6 +3,7 @@ class Constants{
     public static readonly SCORE_UPDATED = "SCORE_UPDATED";
     public static readonly UP_POINTS = "UP_POINTS";
     public static readonly FOOD_EATEN = "FOOD_EATEN";
+    public static readonly PORTAL_ACTIVATED = "PORTAL_ACTIVATED";
 
     public static readonly BUTTON_PRESSED = "BUTTON_PRESSED";
     public static readonly START_GAME = "START_GAME";

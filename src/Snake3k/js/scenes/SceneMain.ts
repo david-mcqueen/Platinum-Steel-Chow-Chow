@@ -36,6 +36,8 @@ class SceneMain extends Phaser.Scene {
     private gridConfig: IGridConfig;
     private shouldAddFood: boolean = false;
 
+    private portal: Phaser.GameObjects.Arc
+
     private food: Food;
 
     private back: Phaser.GameObjects.Image;
@@ -99,13 +101,34 @@ class SceneMain extends Phaser.Scene {
         this.shouldAddFood = true;
 
         emitter.off(Constants.FOOD_EATEN).on(Constants.FOOD_EATEN, this.foodEaten);
+        emitter.off(Constants.PORTAL_ACTIVATED).on(Constants.PORTAL_ACTIVATED, this.portalActivated);
 
+        this.addPortal();
         // this.grid.debug();
+    }
+
+    private portalActivated = () => {
+        // TODO:- TRANSITION
+    }
+
+    private addPortal = () => {
+        if (this.portal){
+            return;
+        }
+        this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
+        this.grid.placeAtIndex(1225, this.portal);
+    }
+
+    private growPortal = () => {
+
+        this.portal.radius = this.portal.radius * 1.125;
     }
 
     private foodEaten = (food: Food) => {
         this.removeFoodItem(food);
         this.shouldAddFood = true;
+
+        this.growPortal();
     }
 
     update(time: number, delta: number) {
@@ -119,11 +142,10 @@ class SceneMain extends Phaser.Scene {
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
             
-            this.player.checkPlayerCollision(this.food);
+            this.player.checkPlayerCollision(this.food, this.player.head, this.portal);
 
             this.addPendingFood();
             this.cameraManager.updateHints(this.player.head, this.food);
-            
         }
 
         // User can tell it to change direction whenever they want
