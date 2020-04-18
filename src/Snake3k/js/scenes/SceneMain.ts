@@ -84,11 +84,13 @@ class SceneMain extends Phaser.Scene {
         this.cameras.main.setViewport((+this.game.config.width - 500) / 2, (+this.game.config.height - 500) / 2, 500, 500);
         
         // Media Manager
+        if (!this.mediaManager){
         const mediaConfig: IMediaManagerConfig = {
             scene: this
         };
         this.mediaManager = new MediaManager(mediaConfig, model);
         this.mediaManager.setBackgroundMusic('background_main');
+        }
 
         this.previousTime = this.game.getTime();
         
