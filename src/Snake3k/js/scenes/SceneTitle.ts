@@ -17,8 +17,7 @@ import { emitter, model } from '../main';
 import IMediaManagerConfig from '../../../toolbox/js/classes/IMediaManagerConfig';
 import MediaManager from '../../../toolbox/js/classes/util/MediaManager';
 
-import backgroundSoundmp3 from '../../audio/random-race.mp3';
-import backgroundSoundogg from '../../audio/random-race.ogg';
+import backgroundSoundmp3 from '../../audio/background_title.mp3';
 import SoundButtons from '../../../toolbox/js/classes/ui/SoundButtons';
 
 class SceneTitle extends Phaser.Scene {
@@ -34,7 +33,7 @@ class SceneTitle extends Phaser.Scene {
         this.load.image('title', titleImg);
         this.load.image(`buttonGreenRound`, buttonGreenRoundImg);
         this.load.image(`buttonOrangeRound`, buttonOrangeRoundImg);
-        this.load.audio('background', [backgroundSoundmp3, backgroundSoundogg]);
+        this.load.audio('background_title', [backgroundSoundmp3]);
 
         this.load.image("toggleBack", greenToggleBack);
         this.load.image("sfxOff", sfxOffIcon);
@@ -68,7 +67,7 @@ class SceneTitle extends Phaser.Scene {
             scene: this
         };
         this.mediaManager = new MediaManager(mediaConfig, model);
-        this.mediaManager.setBackgroundMusic('background');
+        this.mediaManager.setBackgroundMusic('background_title');
 
         emitter.off(Constants.START_GAME).on(Constants.START_GAME, this.startGame);
 
@@ -81,6 +80,7 @@ class SceneTitle extends Phaser.Scene {
     private startGame = (params: any) => {
         console.log(params);
         this.scene.start('SceneMain')
+        this.mediaManager.stop();
     }
 }
 

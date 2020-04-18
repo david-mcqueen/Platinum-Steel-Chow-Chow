@@ -41,7 +41,7 @@ class SceneOver extends Phaser.Scene {
         this.grid.placeAtIndex(93, btnStart);
 
         emitter.off(Constants.RESTART_GAME).on(Constants.RESTART_GAME, this.restartGame);
-        this.scene.stop('SceneMain');
+        
     }
 
     private restartGame = (params: any) => {

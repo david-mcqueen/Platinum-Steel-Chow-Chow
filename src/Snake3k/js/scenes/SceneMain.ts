@@ -7,14 +7,21 @@ import ScoreBox from "../../../toolbox/js/classes/components/ScoreBox";
 import { model, emitter } from "../main";
 import Constants from "../../../toolbox/js/Constants";
 
+import coinSound from '../../audio/coin.wav';
+
 import backgroundImg from '../../images/background.jpg';
-import CameraHint from "../classes/CameraHint";
 import CameraManager from "../classes/CameraManager";
+import MediaManager from "../../../toolbox/js/classes/util/MediaManager";
+import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig";
+
+import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
 
 class SceneMain extends Phaser.Scene {
 
     private gridCellHeight: number = 20;
     private gridCellWidth: number = 20;
+
+    private mediaManager: MediaManager;
 
     private grid: AlignGrid;
     private player: Player;
@@ -39,6 +46,8 @@ class SceneMain extends Phaser.Scene {
 
     preload(){
         this.load.image('background', backgroundImg);
+        this.load.audio('coin', [coinSound]);
+        this.load.audio('background_main', [backgroundMainSoundmp3]);
     }
 
     create(){
@@ -67,14 +76,19 @@ class SceneMain extends Phaser.Scene {
         // Cameras
         this.cameras.main.setBounds(0, 0, +this.game.config.width, +this.game.config.height);
         
-        // Setup CameraManager
+        // CameraManager
         this.cameraManager = new CameraManager({scene: this}, this.cameras.main);
 
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
         this.cameras.main.setViewport((+this.game.config.width - 500) / 2, (+this.game.config.height - 500) / 2, 500, 500);
         
-
+        // Media Manager
+        const mediaConfig: IMediaManagerConfig = {
+            scene: this
+        };
+        this.mediaManager = new MediaManager(mediaConfig, model);
+        this.mediaManager.setBackgroundMusic('background_main');
 
         this.previousTime = this.game.getTime();
         

@@ -17,7 +17,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(png|jp(e*)g|svg|mp3|ogg)$/,  
+        test: /\.(png|jp(e*)g|svg|mp3|ogg|wav)$/,  
         use: [{
             loader: 'file-loader',
             options: { 

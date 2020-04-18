@@ -205,6 +205,7 @@ class Player extends Phaser.GameObjects.Container {
                 // OM NOM NOM NOM
                 this.queuePieceAddition();
                 
+                emitter.emit(Constants.PLAY_SOUND, "coin");
                 emitter.emit(Constants.FOOD_EATEN, foodTarget)
                 emitter.emit(Constants.UP_POINTS, 1);
             }
