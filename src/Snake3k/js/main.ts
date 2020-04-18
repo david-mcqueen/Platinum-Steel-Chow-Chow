@@ -11,7 +11,7 @@ if (isMobile == -1){
 }
 
 const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
-    title: 'SnakeTron',
+    title: 'Snake3k',
     type: Phaser.AUTO,
     scale: {
         width: 1000,
@@ -24,7 +24,7 @@ const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
 };
 
 const gameConfig_Mobile: Phaser.Types.Core.GameConfig = {
-    title: 'SnakeTron',
+    title: 'Snake3k',
     type: Phaser.AUTO,
     scale: {
         width: window.innerWidth,

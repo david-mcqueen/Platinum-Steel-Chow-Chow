@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const source = `snaketron`;
+const source = `Snake3k`;
 
 module.exports = {
   entry: {
