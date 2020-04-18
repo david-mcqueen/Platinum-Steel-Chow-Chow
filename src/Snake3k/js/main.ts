@@ -10,6 +10,8 @@ if (isMobile == -1){
     isMobile = navigator.userAgent.indexOf(`Tablet`);
 }
 
+console.log("hello")
+
 const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
     title: 'Snake3k',
     type: Phaser.AUTO,
