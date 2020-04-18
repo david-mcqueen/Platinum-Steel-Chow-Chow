@@ -2,7 +2,7 @@
   "name": "Snaketron",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/snaketron/js/main.ts",
   "scripts": {
     "build": "webpack",
     "dev": "webpack && webpack-dev-server"
