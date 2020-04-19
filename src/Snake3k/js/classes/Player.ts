@@ -203,24 +203,21 @@ class Player extends Phaser.GameObjects.Container {
         this.checkPlayerCollisionWithPortal(head, portalTarget)
     }
 
-    private checkPlayerCollisionWithPortal(head: Phaser.GameObjects.Rectangle, portalTarget: Phaser.GameObjects.Arc){
-        const fullBounds = portalTarget.getBounds();
-
-        const reductionRate = 0.75;
-
-        // We want to reduce the width & height
-        const newWidth = fullBounds.width * reductionRate;
-        const newheight = fullBounds.height * reductionRate;
-
-        const newX = fullBounds.centerX - (newWidth / 2) // The center - the new width / 2
-        const newY = fullBounds.centerY - (newheight / 2);
-        
-        const reducedBounds = new Phaser.Geom.Rectangle(newX, newY, newWidth, newheight);
-
-        if (reducedBounds.contains(head.x, head.y)){
+    private checkPlayerCollisionWithPortal(head: Phaser.GameObjects.Rectangle, portalTarget: Phaser.GameObjects.Arc){        
+        if (this.isAreaInPortal(head, portalTarget)) {
             emitter.emit(Constants.PORTAL_ACTIVATED);
         }
-        
+    }
+
+    public isAreaInPortal = (head: any, portal: Phaser.GameObjects.Arc) => {
+        const fullBounds = portal.getBounds();
+
+        const distance = ((head.x - portal.x) * (head.x - portal.x)) + ((head.y - portal.y) * (head.y - portal.y))
+        if (Math.sqrt(distance) <    portal.radius){
+            return true;
+        }
+
+        return false;
     }
 
     // Check if the player has collided with food, and eat it if necessary

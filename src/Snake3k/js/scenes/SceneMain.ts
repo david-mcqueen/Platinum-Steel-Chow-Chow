@@ -109,6 +109,7 @@ class SceneMain extends Phaser.Scene {
 
     private portalActivated = () => {
         // TODO:- TRANSITION
+        console.log("activated");
     }
 
     private graphicsarc: Phaser.GameObjects.Graphics;
@@ -213,11 +214,12 @@ class SceneMain extends Phaser.Scene {
         let placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
 
         const occupiedSpace = this.player.fullPosition;
+        
 
         // Keep going until we find an available index
         // TODO:- What if there are NO available squares? There will be a better way to do this to consciously look instead
         // of recursively drilling until we hit something. TODO:- 
-        if (occupiedSpace.indexOf(placement) > -1){
+        if (occupiedSpace.indexOf(placement) > -1 || this.player.isAreaInPortal(placement, this.portal)){
             return this.getRandomIndex();
         }
 
