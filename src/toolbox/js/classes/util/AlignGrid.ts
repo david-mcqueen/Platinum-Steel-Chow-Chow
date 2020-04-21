@@ -80,18 +80,24 @@ class AlignGrid {
 
     // Places the object at the given index, counting left to right top to bottom
     public placeAtIndex = (index: number, obj: any): void => {
-        const coordinates = this.getCoordinatesOfIndex(index);
-
-        this.placeAt(coordinates.x, coordinates.y, obj);
-    }
-
-    public getCoordinatesOfIndex(index: number): {x:number, y: number} {
         const y = Math.floor(index / this.config.columns);
         const x = index - (y * this.config.columns);
 
+        this.placeAt(x, y, obj);
+    }
+
+    public getCoordinatesOfIndex(index: number): {x:number, y: number} {
+        // We get the col & row
+        const y = Math.floor(index / this.config.columns);
+        const x = index - (y * this.config.columns);
+
+        // Now get the coordinates
+        const x2 = (this.cw * x) + (this.cw / 2);
+        const y2 = (this.ch * y) + (this.ch / 2);
+
         return {
-            x: x,
-            y: y
+            x: x2,
+            y: y2
         }
         
     }
