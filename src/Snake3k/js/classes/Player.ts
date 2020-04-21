@@ -209,11 +209,10 @@ class Player extends Phaser.GameObjects.Container {
         }
     }
 
-    public isAreaInPortal = (head: any, portal: Phaser.GameObjects.Arc) => {
-        const fullBounds = portal.getBounds();
+    public isAreaInPortal = (location: Phaser.GameObjects.Rectangle | {x: number, y: number}, portal: Phaser.GameObjects.Arc) => {
 
-        const distance = ((head.x - portal.x) * (head.x - portal.x)) + ((head.y - portal.y) * (head.y - portal.y))
-        if (Math.sqrt(distance) <    portal.radius){
+        const distance = ((location.x - portal.x) * (location.x - portal.x)) + ((location.y - portal.y) * (location.y - portal.y))
+        if (Math.sqrt(distance) < portal.radius){
             return true;
         }
 

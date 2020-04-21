@@ -104,6 +104,7 @@ class SceneMain extends Phaser.Scene {
         emitter.off(Constants.PORTAL_ACTIVATED).on(Constants.PORTAL_ACTIVATED, this.portalActivated);
 
         this.addPortal();
+        this.addPendingFood();
         // this.grid.debug();
     }
 
@@ -153,6 +154,7 @@ class SceneMain extends Phaser.Scene {
         this.shouldAddFood = true;
 
         this.growPortal();
+        this.addPendingFood();
     }
 
     update(time: number, delta: number) {
@@ -168,7 +170,7 @@ class SceneMain extends Phaser.Scene {
             
             this.player.checkPlayerCollision(this.food, this.player.head, this.portal);
 
-            this.addPendingFood();
+
             this.cameraManager.updateHints(this.player.head, this.food);
         }
 
@@ -201,9 +203,6 @@ class SceneMain extends Phaser.Scene {
             this.shouldAddFood = true;
         }
     }
-    
-    
-
 
     // Can be made generic
     private removeFoodItem = (food :Food) => {
@@ -211,27 +210,37 @@ class SceneMain extends Phaser.Scene {
     }
 
     private getRandomIndex = (): number => {
+        // Get a random index for the new food
         let placement = Math.floor(Math.random() * (this.gridConfig.rows * this.gridConfig.columns));
 
+        // The space currently occupied by the player
         const occupiedSpace = this.player.fullPosition;
-        
+        const placementCoordinates = this.grid.getCoordinatesOfIndex(placement);
 
         // Keep going until we find an available index
         // TODO:- What if there are NO available squares? There will be a better way to do this to consciously look instead
         // of recursively drilling until we hit something. TODO:- 
-        if (occupiedSpace.indexOf(placement) > -1 || this.player.isAreaInPortal(placement, this.portal)){
+        if (this.player.isAreaInPortal(placementCoordinates, this.portal)) {
+            console.log("area occupied by portal")
             return this.getRandomIndex();
+        } else if (occupiedSpace.indexOf(placement) > -1){
+            console.log("area occupied by player")
+            return this.getRandomIndex();
+        }else {
+            console.log("area not occupied")
+            return placement;
         }
-
-        return placement;
+        
     }
 
     private addPendingFood = () => {
         if (!this.shouldAddFood){
             return;
         }
+
         this.shouldAddFood = false;
         const food = this.add.rectangle(0, 0, 10, 10, 0xffffff) as Food;
+        food.setDepth(1000)
         
         const placement = this.getRandomIndex();
         
