@@ -4,11 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = {
-  entry: {
-    app: `./src/Snake3k/js/main.ts`,
-    vendors: ['phaser']
-  },
-
   module: {
     rules: [
       {
@@ -32,11 +27,6 @@ module.exports = {
 
   resolve: {
     extensions: [ '.ts', '.tsx', '.js' ]
-  },
-
-  output: {
-    filename: 'app.bundle.js',
-    path: path.resolve(__dirname, 'dist')
   },
 
   mode: 'development',
@@ -64,14 +54,30 @@ module.exports = {
     }),
   ],
 
+  entry: {
+    app: `./src/Snake3k/js/main.ts`,
+    vendors: ['phaser']
+  },
+
+  output: {
+    filename: 'app.bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    chunkFilename: '[name].bundle.js',
+    publicPath: '/'
+  },
+
   optimization: {
     splitChunks: {
+      chunks: 'all',
+      minSize: 4000,
       cacheGroups: {
-        commons: {
+        vendors: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
-          chunks: 'all'
-        }
+          chunks: 'all',
+          enforce: true,
+          priority: 10
+        },
       }
     }
   }
