@@ -132,9 +132,6 @@ class SceneMain extends Phaser.Scene {
     }
 
     private addPortal = () => {
-        if (this.portal){
-            return;
-        }
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
         this.portal.setDepth(1000);
         this.grid.placeAtIndex(1225, this.portal);
@@ -224,7 +221,7 @@ class SceneMain extends Phaser.Scene {
             console.log("area occupied by portal")
             return this.getRandomIndex();
         } else if (occupiedSpace.indexOf(placement) > -1){
-            console.log("area occupied by player")
+            console.log("area occupied by player");
             return this.getRandomIndex();
         }else {
             console.log("area not occupied")
