@@ -10,7 +10,6 @@ class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
     private gridConfig: IGridConfig;
-    private gameConfig: Phaser.Core.Config;
     private addTailPiece: boolean;
     private _isDead: boolean = false;
 
@@ -39,18 +38,16 @@ class Player extends Phaser.GameObjects.Container {
         return fullPosition;
     }
 
-    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig, gameConfig: Phaser.Core.Config) {
+    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig) {
         super(scene);
 
         this.scene = scene;
         this.parts = this.scene.add.group();
         this.grid = grid;
         this.gridConfig = gridConfig;
-        this.gameConfig = gameConfig;
 
         const rectHead = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
         rectHead.setDepth(100);
-        // Align.scaleToGameW(rectHead, 0.04, gameConfig)
         grid.placeAtIndex(startIndex, rectHead);
         
         rectHead.gridIndex = startIndex;
@@ -60,7 +57,6 @@ class Player extends Phaser.GameObjects.Container {
 
         for (let index = 1; index < length; index++) {
             const rectTail = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
-            // Align.scaleToGameW(rectTail, 0.04, gameConfig)
             const positionTail = startIndex - index;
             rectTail.gridIndex = positionTail;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
@@ -80,7 +76,6 @@ class Player extends Phaser.GameObjects.Container {
         const lastChild = this.parts.getChildren()[this.parts.getLength() - 1] as PlayerPart;
 
         const rectTail = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
-        // Align.scaleToGameW(rectTail, 0.04, this.gameConfig)
         rectTail.gridIndex = lastChild.gridIndex; // the position of what we are going to follow
         rectTail.directionOfTravel = lastChild.directionOfTravel;
 

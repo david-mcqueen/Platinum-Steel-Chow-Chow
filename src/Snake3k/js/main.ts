@@ -14,8 +14,8 @@ const gameConfig_Desktop: Phaser.Types.Core.GameConfig = {
     title: 'Snake3k',
     type: Phaser.AUTO,
     scale: {
-        width: 1000,
-        height: 1000,
+        width: 500,
+        height: 500,
     },
     transparent: true,
     backgroundColor: '#000000',

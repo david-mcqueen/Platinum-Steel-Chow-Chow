@@ -32,6 +32,10 @@ class SceneMain extends Phaser.Scene {
     private cameraManager: CameraManager;
 
     private gameSpeed: number = 100; // ms between moving the player
+    private gameMapArea = {
+        height: 1000,
+        width: 1000
+    }
 
     private gridConfig: IGridConfig;
     private shouldAddFood: boolean = false;
@@ -57,13 +61,15 @@ class SceneMain extends Phaser.Scene {
         this.back.setOrigin(0, 0);
         model.score = 0;
 
-        const columns = +this.game.config.width / this.gridCellWidth;
-        const rows = +this.game.config.height / this.gridCellHeight;
+        const columns = +this.gameMapArea.width / this.gridCellWidth;
+        const rows = +this.gameMapArea.height / this.gridCellHeight;
 
         // Grid
         this.gridConfig = {
             rows: rows,
             columns: columns,
+            height: this.gameMapArea.height,
+            width: this.gameMapArea.width,
             scene: this
         };
         
@@ -73,17 +79,17 @@ class SceneMain extends Phaser.Scene {
         this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
 
         // Player
-        this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.game.config);
+        this.player = new Player(90, 5, this, this.grid, this.gridConfig);
 
         // Cameras
-        this.cameras.main.setBounds(0, 0, +this.game.config.width, +this.game.config.height);
+        this.cameras.main.setBounds(0, 0, +this.gameMapArea.width, +this.gameMapArea.height);
         
         // CameraManager
         this.cameraManager = new CameraManager({scene: this}, this.cameras.main);
 
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
-        this.cameras.main.setViewport((+this.game.config.width - 500) / 2, (+this.game.config.height - 500) / 2, 500, 500);
+        this.cameras.main.setViewport(0, 0, +this.game.config.width, +this.game.config.height);
         
         // Media Manager
         if (!this.mediaManager){
@@ -248,7 +254,6 @@ class SceneMain extends Phaser.Scene {
         
         const placement = this.getRandomIndex();
         
-        // Align.scaleToGameW(food, 0.02, this.game.config);
         this.grid.placeAtIndex(placement, food);
         food.gridIndex = placement;
         this.food = food;
