@@ -128,7 +128,7 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc.setDepth(1000);
         graphics.strokePath();
-        this.grid.placeAtIndex(1225, this.graphicsarc)
+        this.grid.placeAtIndex(1225, this.graphicsarc);
     }
 
     private addPortal = () => {
@@ -141,9 +141,16 @@ class SceneMain extends Phaser.Scene {
 
     private growPortal = () => {
 
-        this.portal.radius = this.portal.radius * 1.125;
+        this.tweens.add({
+            targets: this.portal,
+            duration: 1000,
+            radius: this.portal.radius * 1.125,
+            onUpdate: (tweens: Phaser.Tweens.Tween, target: any) => {
+                this.drawPortalBorder(0, 0, target.radius);
+            }
+        });
 
-        this.drawPortalBorder(0, 0, this.portal.radius);
+
     }
 
     private foodEaten = (food: Food) => {
