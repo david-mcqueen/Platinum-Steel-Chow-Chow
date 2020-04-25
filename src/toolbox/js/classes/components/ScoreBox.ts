@@ -25,6 +25,7 @@ class ScoreBox extends Phaser.GameObjects.Container {
         // this.add(this.text1);
 
         // this.scene.add.existing(this);
+        this.text1.depth = 1001;
 
         model.emitter.off(Constants.SCORE_UPDATED).on(Constants.SCORE_UPDATED, this.scoreUpdated);
     }
