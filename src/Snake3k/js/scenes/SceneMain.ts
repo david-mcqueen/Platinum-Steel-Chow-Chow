@@ -118,6 +118,7 @@ class SceneMain extends Phaser.Scene {
     private portalActivated = () => {
         // TODO:- TRANSITION
         console.log("activated");
+        this.scene.start("SceneOver");
     }
 
     private graphicsarc: Phaser.GameObjects.Graphics;
@@ -158,8 +159,6 @@ class SceneMain extends Phaser.Scene {
                 this.drawPortalBorder(0, 0, target.radius);
             }
         });
-
-
     }
 
     private foodEaten = (food: Food) => {
@@ -234,13 +233,10 @@ class SceneMain extends Phaser.Scene {
         // TODO:- What if there are NO available squares? There will be a better way to do this to consciously look instead
         // of recursively drilling until we hit something. TODO:- 
         if (this.player.isAreaInPortal(placementCoordinates, this.portal, this.targetPortalRadius)) {
-            console.log("area occupied by portal")
             return this.getRandomIndex();
         } else if (occupiedSpace.indexOf(placement) > -1){
-            console.log("area occupied by player");
             return this.getRandomIndex();
         }else {
-            console.log("area not occupied")
             return placement;
         }
         
