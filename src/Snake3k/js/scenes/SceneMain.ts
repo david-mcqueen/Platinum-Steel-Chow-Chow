@@ -41,6 +41,7 @@ class SceneMain extends Phaser.Scene {
     private shouldAddFood: boolean = false;
 
     private portal: Phaser.GameObjects.Arc
+    private targetPortalRadius: number;
 
     private food: Food;
 
@@ -147,10 +148,12 @@ class SceneMain extends Phaser.Scene {
 
     private growPortal = () => {
 
+        this.targetPortalRadius = this.portal.radius * 1.125;
+
         this.tweens.add({
             targets: this.portal,
-            duration: 1000,
-            radius: this.portal.radius * 1.125,
+            duration: 2500,
+            radius: this.targetPortalRadius,
             onUpdate: (tweens: Phaser.Tweens.Tween, target: any) => {
                 this.drawPortalBorder(0, 0, target.radius);
             }
@@ -230,7 +233,7 @@ class SceneMain extends Phaser.Scene {
         // Keep going until we find an available index
         // TODO:- What if there are NO available squares? There will be a better way to do this to consciously look instead
         // of recursively drilling until we hit something. TODO:- 
-        if (this.player.isAreaInPortal(placementCoordinates, this.portal)) {
+        if (this.player.isAreaInPortal(placementCoordinates, this.portal, this.targetPortalRadius)) {
             console.log("area occupied by portal")
             return this.getRandomIndex();
         } else if (occupiedSpace.indexOf(placement) > -1){

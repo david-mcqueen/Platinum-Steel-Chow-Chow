@@ -204,10 +204,11 @@ class Player extends Phaser.GameObjects.Container {
         }
     }
 
-    public isAreaInPortal = (location: Phaser.GameObjects.Rectangle | {x: number, y: number}, portal: Phaser.GameObjects.Arc) => {
+    public isAreaInPortal = (location: Phaser.GameObjects.Rectangle | {x: number, y: number}, portal: Phaser.GameObjects.Arc, overrideRadius?: number) => {
+        const radius = overrideRadius ? overrideRadius : portal.radius;
 
         const distance = ((location.x - portal.x) * (location.x - portal.x)) + ((location.y - portal.y) * (location.y - portal.y))
-        if (Math.sqrt(distance) < portal.radius){
+        if (Math.sqrt(distance) < radius){
             return true;
         }
 
