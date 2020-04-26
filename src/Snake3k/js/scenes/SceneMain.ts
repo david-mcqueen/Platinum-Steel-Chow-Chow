@@ -112,6 +112,9 @@ class SceneMain extends Phaser.Scene {
         // Score Box
         this.scoreBox = new ScoreBox({scene: this, x: this.gameConfig.viewableArea.width - 25, y: 25, originX: 1, originY: 1}, model); // 1 zoom
 
+        // HotBarManager
+        this.hotbarManager = new HotBarManager(this, this.gameConfig);
+
         // Player
         this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);
 
@@ -120,9 +123,6 @@ class SceneMain extends Phaser.Scene {
         
         // CameraManager
         this.cameraManager = new CameraManager({scene: this}, this.cameras.main, this.gameConfig);
-
-        // HotBarManager
-        this.hotbarManager = new HotBarManager(this, this.gameConfig);
 
         // Setup the camera follows etc
         // TODO:- Move this into the camera manager

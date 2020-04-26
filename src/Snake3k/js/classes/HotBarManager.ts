@@ -1,6 +1,8 @@
 import IGameConfig from "../IGameConfig";
 import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
+import { emitter } from "../main";
+import Constants from "../../../toolbox/js/Constants";
 
 class HotBarManager extends Phaser.GameObjects.Container {
     private gameConfig: IGameConfig;
@@ -31,6 +33,8 @@ class HotBarManager extends Phaser.GameObjects.Container {
         this.grid = new AlignGrid(this.gridConfig);
 
         this.addHotBar();
+
+        emitter.off(Constants.INVENTORY_CHANGED).on(Constants.INVENTORY_CHANGED, this.dislpayInventory);
     }
 
     private addHotBar = () => {
@@ -58,8 +62,14 @@ class HotBarManager extends Phaser.GameObjects.Container {
         const label = this.scene.add.text(0, 0, `${labelString}`)
         label.setScrollFactor(0).setOrigin(0, 0).setDepth(10000);
         this.grid.placeAtIndex(indexPosition, label);
-
     }
+
+
+    private dislpayInventory = (inventory: {[key: string] : number}) => {
+        console.log("displaying invetory")
+        console.log(inventory);
+    }
+
 }
 
 export default HotBarManager;

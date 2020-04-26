@@ -6,6 +6,8 @@ import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import Food from "./Food";
 import Constants from "../../../toolbox/js/Constants";
 import IGameConfig from "../IGameConfig";
+import InventoryManager from "./InventoryManager";
+import SpeedUpPowerup from "./powerups/SpeedUpPowerup";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
@@ -14,6 +16,7 @@ class Player extends Phaser.GameObjects.Container {
     private gameConfig: IGameConfig;
     private addTailPiece: boolean;
     private _isDead: boolean = false;
+    private inventoryManager: InventoryManager;
 
     get isDead(): boolean {
         return this._isDead;
@@ -48,6 +51,9 @@ class Player extends Phaser.GameObjects.Container {
         this.grid = grid;
         this.gridConfig = gridConfig;
         this.gameConfig = gameConfig;
+        this.inventoryManager = new InventoryManager(this.scene);
+
+        this.inventoryManager.addInventoryItem(new SpeedUpPowerup())
 
         const rectHead = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
         rectHead.setDepth(100);
