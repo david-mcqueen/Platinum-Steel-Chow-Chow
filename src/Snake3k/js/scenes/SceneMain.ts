@@ -15,11 +15,12 @@ import MediaManager from "../../../toolbox/js/classes/util/MediaManager";
 import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig";
 
 import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
+import Align from "../../../toolbox/js/classes/util/Align"; 
+import IGameConfig from "../IGameConfig";
 
 class SceneMain extends Phaser.Scene {
 
-    private gridCellHeight: number = 20;
-    private gridCellWidth: number = 20;
+    private gameConfig: IGameConfig;
 
     private mediaManager: MediaManager;
 
@@ -31,10 +32,18 @@ class SceneMain extends Phaser.Scene {
     private scoreBox: ScoreBox;
     private cameraManager: CameraManager;
 
-    private gameSpeed: number = 100; // ms between moving the player
-    private gameMapArea = {
-        height: 1000,
-        width: 1000
+    private get middleIndex(): number {
+        const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
+
+        const cells = cellsWidth * cellsHeight
+
+        const halfWay = cells / 2;
+
+        // minus half the width to get to the middle
+        const mid = halfWay - (cellsWidth / 2);
+
+        return mid;
     }
 
     private gridConfig: IGridConfig;
@@ -45,7 +54,10 @@ class SceneMain extends Phaser.Scene {
 
     private food: Food;
 
-    private back: Phaser.GameObjects.Image;
+    private back_TL: Phaser.GameObjects.Image;
+    private back_TR: Phaser.GameObjects.Image;
+    private back_BL: Phaser.GameObjects.Image;
+    private back_BR: Phaser.GameObjects.Image;
 
     constructor(){
         super('SceneMain');
@@ -55,38 +67,57 @@ class SceneMain extends Phaser.Scene {
         this.load.image('background', backgroundImg);
         this.load.audio('coin', [coinSound]);
         this.load.audio('background_main', [backgroundMainSoundmp3]);
+        this.gameConfig = {
+            playableArea: {
+                width: 1020 * 2,
+                height: 1020 * 2,
+                grid: {
+                    cellHeight: 20,
+                    cellWidth: 20,
+    
+                    width: (1020 * 2) / 20, // How many cells width & height
+                    height: (1020 * 2) / 20
+                }
+            },
+            viewableArea: {
+                width: +this.game.config.width,
+                height: +this.game.config.height
+            },
+            gameSpeed: 100 // ms between moving the player
+        };
     }
 
     create(){
-        this.back = this.add.image(0, 0, 'background');
-        this.back.setOrigin(0, 0);
+
+        this.addBackground();
+
         model.score = 0;
 
-        const columns = +this.gameMapArea.width / this.gridCellWidth;
-        const rows = +this.gameMapArea.height / this.gridCellHeight;
+        const columns = +this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const rows = +this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
 
         // Grid
         this.gridConfig = {
             rows: rows,
             columns: columns,
-            height: this.gameMapArea.height,
-            width: this.gameMapArea.width,
+            height: this.gameConfig.playableArea.height,
+            width: this.gameConfig.playableArea.width,
             scene: this
         };
         
         this.grid = new AlignGrid(this.gridConfig, this.game.config);
         
         // Score Box
-        this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
+        this.scoreBox = new ScoreBox({scene: this, x: this.gameConfig.viewableArea.width - 25, y: 25, originX: 1, originY: 1}, model); // 1 zoom
 
         // Player
-        this.player = new Player(90, 5, this, this.grid, this.gridConfig);
+        this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);
 
         // Cameras
-        this.cameras.main.setBounds(0, 0, +this.gameMapArea.width, +this.gameMapArea.height);
+        this.cameras.main.setBounds(0, 0, +this.gameConfig.playableArea.width, +this.gameConfig.playableArea.height);
         
         // CameraManager
-        this.cameraManager = new CameraManager({scene: this}, this.cameras.main);
+        this.cameraManager = new CameraManager({scene: this}, this.cameras.main, this.gameConfig);
 
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
@@ -115,6 +146,28 @@ class SceneMain extends Phaser.Scene {
         // this.grid.debug();
     }
 
+    private addBackground = () => {
+        this.back_TL = this.add.image(0, 0, 'background');
+        Align.scaleToW(this.back_TL, 1, 1024)
+        this.back_TL.setOrigin(0, 0);
+
+        this.back_TR = this.add.image(1024, 0, "background");
+        Align.scaleToW(this.back_TR, 1, 1024)
+        this.back_TR.flipX = true;
+        this.back_TR.setOrigin(0, 0);
+
+        this.back_BL = this.add.image(0, 1024, 'background');
+        Align.scaleToW(this.back_BL, 1, 1024)
+        this.back_BL.flipY = true;
+        this.back_BL.setOrigin(0, 0);
+
+        this.back_BR = this.add.image(1024, 1024, 'background');
+        Align.scaleToW(this.back_BR, 1, 1024)
+        this.back_BR.flipY = true;
+        this.back_BR.flipX = true;
+        this.back_BR.setOrigin(0, 0);
+    }
+
     private portalActivated = () => {
         // TODO:- TRANSITION
         console.log("activated");
@@ -136,24 +189,25 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc.setDepth(1000);
         graphics.strokePath();
-        this.grid.placeAtIndex(1225, this.graphicsarc);
+        this.grid.placeAtIndex(this.middleIndex, this.graphicsarc);
     }
 
     private addPortal = () => {
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
         this.portal.setDepth(1000);
-        this.grid.placeAtIndex(1225, this.portal);
+        this.grid.placeAtIndex(this.middleIndex, this.portal);
         this.drawPortalBorder(0, 0, 100);
         
     }
 
     private growPortal = () => {
 
-        this.targetPortalRadius = this.portal.radius * 1.125;
+        // If we are already growing, we can keep on growing based on the target size
+        this.targetPortalRadius = (this.targetPortalRadius ? this.targetPortalRadius : this.portal.radius) * 1.125;
 
         this.tweens.add({
             targets: this.portal,
-            duration: 2500,
+            duration: 5000,
             radius: this.targetPortalRadius,
             onUpdate: (tweens: Phaser.Tweens.Tween, target: any) => {
                 this.drawPortalBorder(0, 0, target.radius);
@@ -175,7 +229,7 @@ class SceneMain extends Phaser.Scene {
         }
 
         // Only move if we have hit the epoch 
-        if(Math.floor(time) - this.gameSpeed > this.previousTime) {
+        if(Math.floor(time) - this.gameConfig.gameSpeed > this.previousTime) {
 
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
