@@ -34,7 +34,7 @@ class SceneMain extends Phaser.Scene {
 
     private get middleIndex(): number {
         const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
-        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.height;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
 
         const cells = cellsWidth * cellsHeight
 
