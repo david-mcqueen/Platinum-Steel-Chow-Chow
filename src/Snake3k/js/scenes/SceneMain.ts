@@ -117,7 +117,7 @@ class SceneMain extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, +this.gameConfig.playableArea.width, +this.gameConfig.playableArea.height);
         
         // CameraManager
-        this.cameraManager = new CameraManager({scene: this}, this.cameras.main);
+        this.cameraManager = new CameraManager({scene: this}, this.cameras.main, this.gameConfig);
 
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
