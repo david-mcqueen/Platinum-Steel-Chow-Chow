@@ -35,21 +35,30 @@ class HotBarManager extends Phaser.GameObjects.Container {
 
     private addHotBar = () => {
 
-        for (let index = 0; index <= 9; index++) {
+        for (let index = 1; index <= 9; index++) {
             // const hotbarButton = this.scene.add.rectangle(0, 0, 75, 75, 0xff0000, 0.75).setScrollFactor(0).setOrigin(0, 0);
-
-            const graphics = this.scene.add.graphics();
-            graphics.lineStyle(2, 0xfae400, 0.3);
-            graphics.beginPath();
-
-            const hotbarButton = graphics.strokeRect(0, 0, 40, 40);
-            graphics.strokePath();
-
-            hotbarButton.setScrollFactor(0);            
-
-            hotbarButton.setDepth(10000);
-            this.grid.placeAtIndex(index, hotbarButton);
+            this.drawButton(index - 1, `${index}`)
         }
+        this.drawButton(9, `0`);
+    }
+    
+    private drawButton = (indexPosition: number, labelString: string) => {
+        const graphics = this.scene.add.graphics();
+        graphics.lineStyle(3, 0x7B9095, 0.8);
+        graphics.beginPath();
+    
+        const hotbarButton = graphics.strokeRect(0, 0, 40, 40);
+        graphics.strokePath();
+    
+        hotbarButton.setScrollFactor(0);            
+    
+        hotbarButton.setDepth(10000);
+        this.grid.placeAtIndex(indexPosition, hotbarButton);
+    
+        const label = this.scene.add.text(0, 0, `${labelString}`)
+        label.setScrollFactor(0).setOrigin(0, 0).setDepth(10000);
+        this.grid.placeAtIndex(indexPosition, label);
+
     }
 }
 
