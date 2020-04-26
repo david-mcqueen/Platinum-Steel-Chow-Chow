@@ -10,6 +10,7 @@ import Constants from "../../../toolbox/js/Constants";
 import coinSound from '../../audio/coin.wav';
 
 import backgroundImg from '../../images/background.jpg';
+import powerUpImg from '../../images/circle-24.png';
 import CameraManager from "../classes/CameraManager";
 import MediaManager from "../../../toolbox/js/classes/util/MediaManager";
 import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig";
@@ -67,6 +68,7 @@ class SceneMain extends Phaser.Scene {
 
     preload(){
         this.load.image('background', backgroundImg);
+        this.load.image('powerup', powerUpImg);
         this.load.audio('coin', [coinSound]);
         this.load.audio('background_main', [backgroundMainSoundmp3]);
         this.gameConfig = {
