@@ -101,6 +101,19 @@ class SceneMain extends Phaser.Scene {
             },
             gameSpeed: 100 // ms between moving the player
         };
+
+        this.cursorKeys = this.input.keyboard.createCursorKeys();
+
+        this.keyboardInput_Hotkey_1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+        this.keyboardInput_Hotkey_2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
+        this.keyboardInput_Hotkey_3 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
+        this.keyboardInput_Hotkey_4 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
+        this.keyboardInput_Hotkey_5 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE);
+        this.keyboardInput_Hotkey_6 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
+        this.keyboardInput_Hotkey_7 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SEVEN);
+        this.keyboardInput_Hotkey_8 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.EIGHT);
+        this.keyboardInput_Hotkey_9 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE);
+        this.keyboardInput_Hotkey_0 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
     }
 
     create(){
@@ -154,20 +167,6 @@ class SceneMain extends Phaser.Scene {
         }
 
         this.previousTime = this.game.getTime();
-        
-        this.cursorKeys = this.input.keyboard.createCursorKeys();
-
-        
-        this.keyboardInput_Hotkey_1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
-        this.keyboardInput_Hotkey_2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
-        this.keyboardInput_Hotkey_3 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
-        this.keyboardInput_Hotkey_4 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
-        this.keyboardInput_Hotkey_5 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE);
-        this.keyboardInput_Hotkey_6 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
-        this.keyboardInput_Hotkey_7 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SEVEN);
-        this.keyboardInput_Hotkey_8 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.EIGHT);
-        this.keyboardInput_Hotkey_9 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE);
-        this.keyboardInput_Hotkey_0 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
 
         this.shouldAddFood = true;
 

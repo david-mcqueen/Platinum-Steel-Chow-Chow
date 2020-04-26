@@ -28,7 +28,7 @@ class HotBarManager extends Phaser.GameObjects.Container {
             rows: 1
         }
 
-        this.gridConfig.gridOffset ={
+        this.gridConfig.gridOffset = {
             x: (this.gameConfig.viewableArea.width / 2) - (this.gridConfig.width / 2) - (this.buttonSize / 2),
             y: this.gameConfig.viewableArea.height - 75
         }
@@ -91,7 +91,10 @@ class HotBarManager extends Phaser.GameObjects.Container {
         this.grid.placeAtIndex(index, orb);
         orb.x += 8;
         orb.y += 8;
-        // orb.setVisible(false);
+
+        orb.setVisible(false);
+        powerUp.orb = orb;
+        
     }
 }
 

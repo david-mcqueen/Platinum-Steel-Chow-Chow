@@ -28,10 +28,17 @@ class SpeedUpPowerup implements IPowerUp {
     // TODO:- Make a manager of a sort which each powerup adds its bound key to and then only 1 can be bound?
 
     public readonly type: PowerupType;
+    public orb?: Phaser.GameObjects.Image;
+
     private _quantity = 0;
 
-    set quantity(val: number) {
-        this._quantity = val;
+    public get quantity() {
+        return this._quantity;
+    }
+
+    increaseQuantity = () => {
+        this._quantity++;
+        this.updateHotbarVisibility();
     }
 
     displayColorTint = { 
@@ -42,8 +49,16 @@ class SpeedUpPowerup implements IPowerUp {
     };
 
     activate = () => {
-        console.log("activate");
+        if (this._quantity > 0){
+            console.log("activate");
+            this._quantity--;
+            this.updateHotbarVisibility();
+        }
     };
+
+    private updateHotbarVisibility = () => {
+        this.orb.setVisible(this._quantity > 0)
+    }
 }
 
 export default SpeedUpPowerup;

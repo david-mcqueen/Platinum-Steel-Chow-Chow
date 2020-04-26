@@ -5,6 +5,10 @@ interface IPowerUp {
     displayColorTint: {topLeft: number, topRight: number, bottomLeft: number, bottomRight: number};
     quantity: number;
     activate: () => void;
+
+    increaseQuantity: () => void;
+
+    orb?: Phaser.GameObjects.Image;
 }
 
 export default IPowerUp;
