@@ -15,6 +15,7 @@ import MediaManager from "../../../toolbox/js/classes/util/MediaManager";
 import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig";
 
 import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
+import Align from "../../../toolbox/js/classes/util/Align";
 
 class SceneMain extends Phaser.Scene {
 
@@ -33,8 +34,22 @@ class SceneMain extends Phaser.Scene {
 
     private gameSpeed: number = 100; // ms between moving the player
     private gameMapArea = {
-        height: 1000,
-        width: 1000
+        height: 1024 * 2, // Background image is 1024
+        width: 1024 * 2
+    }
+
+    private get middleIndex(): number {
+        const cellsWidth = this.gameMapArea.width / this.gridCellWidth;
+        const cellsHeight = this.gameMapArea.height / this.gridCellHeight;
+
+        const cells = cellsWidth * cellsHeight
+
+        const halfWay = cells / 2;
+
+        // minus half the width to get to the middle
+        const mid = halfWay - (cellsWidth / 2);
+
+        return mid;
     }
 
     private gridConfig: IGridConfig;
@@ -45,7 +60,10 @@ class SceneMain extends Phaser.Scene {
 
     private food: Food;
 
-    private back: Phaser.GameObjects.Image;
+    private back_TL: Phaser.GameObjects.Image;
+    private back_TR: Phaser.GameObjects.Image;
+    private back_BL: Phaser.GameObjects.Image;
+    private back_BR: Phaser.GameObjects.Image;
 
     constructor(){
         super('SceneMain');
@@ -58,8 +76,27 @@ class SceneMain extends Phaser.Scene {
     }
 
     create(){
-        this.back = this.add.image(0, 0, 'background');
-        this.back.setOrigin(0, 0);
+        this.back_TL = this.add.image(0, 0, 'background');
+        Align.scaleToW(this.back_TL, 1, 1024)
+        this.back_TL.setOrigin(0, 0);
+
+        this.back_TR = this.add.image(1024, 0, "background");
+        Align.scaleToW(this.back_TR, 1, 1024)
+        this.back_TR.flipX = true;
+        this.back_TR.setOrigin(0, 0);
+
+        this.back_BL = this.add.image(0, 1024, 'background');
+        Align.scaleToW(this.back_BL, 1, 1024)
+        this.back_BL.flipY = true;
+        this.back_BL.setOrigin(0, 0);
+
+        this.back_BR = this.add.image(1024, 1024, 'background');
+        Align.scaleToW(this.back_BR, 1, 1024)
+        this.back_BR.flipY = true;
+        this.back_BR.flipX = true;
+        this.back_BR.setOrigin(0, 0);
+
+
         model.score = 0;
 
         const columns = +this.gameMapArea.width / this.gridCellWidth;
@@ -136,13 +173,13 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc.setDepth(1000);
         graphics.strokePath();
-        this.grid.placeAtIndex(1225, this.graphicsarc);
+        this.grid.placeAtIndex(this.middleIndex, this.graphicsarc);
     }
 
     private addPortal = () => {
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
         this.portal.setDepth(1000);
-        this.grid.placeAtIndex(1225, this.portal);
+        this.grid.placeAtIndex(this.middleIndex, this.portal);
         this.drawPortalBorder(0, 0, 100);
         
     }
