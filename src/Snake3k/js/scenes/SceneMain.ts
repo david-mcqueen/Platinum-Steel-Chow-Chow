@@ -204,7 +204,6 @@ class SceneMain extends Phaser.Scene {
         this.portal.setDepth(1000);
         this.grid.placeAtIndex(this.middleIndex, this.portal);
         this.drawPortalBorder(0, 0, 100);
-        
     }
 
     private growPortal = () => {

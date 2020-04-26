@@ -85,6 +85,15 @@ class AlignGrid {
         this.placeAt(x, y, obj);
     }
 
+    // get the X & y positions of the current index and place there
+    // Usefor for if the starting position has moved (e.g. following the camera)
+    public placeAtCoordinatesOfIndexCurrentPosition = (index: number, obj: any): void => {
+        const position = this.getCoordinatesOfIndex(index);
+        console.log(`placing at: ${position.x} ${position.y}`);
+        obj.x = position.x;
+        obj.y = position.y;
+    }
+
     public getCoordinatesOfIndex(index: number): {x:number, y: number} {
         // We get the col & row
         const y = Math.floor(index / this.config.columns);

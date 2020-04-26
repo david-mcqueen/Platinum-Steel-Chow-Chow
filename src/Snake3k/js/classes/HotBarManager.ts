@@ -34,6 +34,8 @@ class HotBarManager extends Phaser.GameObjects.Container {
 
         this.addHotBar();
 
+        this.addPowerUp(0);
+
         emitter.off(Constants.INVENTORY_CHANGED).on(Constants.INVENTORY_CHANGED, this.dislpayInventory);
     }
 
@@ -54,7 +56,7 @@ class HotBarManager extends Phaser.GameObjects.Container {
         const hotbarButton = graphics.strokeRect(0, 0, 40, 40);
         graphics.strokePath();
     
-        hotbarButton.setScrollFactor(0);            
+        hotbarButton.setScrollFactor(0);
     
         hotbarButton.setDepth(10000);
         this.grid.placeAtIndex(indexPosition, hotbarButton);
@@ -64,12 +66,34 @@ class HotBarManager extends Phaser.GameObjects.Container {
         this.grid.placeAtIndex(indexPosition, label);
     }
 
-
     private dislpayInventory = (inventory: {[key: string] : number}) => {
-        console.log("displaying invetory")
+        console.log("displaying invetory");
         console.log(inventory);
+        
     }
 
+    private addPowerUp = (index: number) => {
+        const orb = this.scene.add.circle(0, 0, 15, 0x85E3FF, 1);
+
+        orb.setDepth(1000);
+        orb.setScrollFactor(0).setOrigin(0, 0);
+        this.grid.placeAtIndex(index, orb);
+        orb.x += 5;
+        orb.y += 5;
+
+        var graphics = this.scene.add.graphics();
+        graphics.lineStyle(2, 0x85E3FF, 0.3);
+        graphics.beginPath();
+
+        const graphicsarc = graphics.arc(0, 0, 15, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), true);
+        graphicsarc.setScrollFactor(0);
+        graphicsarc.setDepth(1000);
+        graphics.strokePath();
+        
+        this.grid.placeAtIndex(index, graphicsarc);
+        graphicsarc.x += 20;
+        graphicsarc.y += 20;
+    }
 }
 
 export default HotBarManager;
