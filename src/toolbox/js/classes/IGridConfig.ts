@@ -3,7 +3,11 @@ interface IGridConfig {
     height: number,
     width: number,
     rows?: number,
-    columns?: number
+    columns?: number,
+    gridOffset?:  {
+        x: number,
+        y: number
+    }
 }
 
 export default IGridConfig;

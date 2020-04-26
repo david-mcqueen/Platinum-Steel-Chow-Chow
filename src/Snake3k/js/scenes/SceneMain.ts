@@ -121,11 +121,8 @@ class SceneMain extends Phaser.Scene {
         // CameraManager
         this.cameraManager = new CameraManager({scene: this}, this.cameras.main, this.gameConfig);
 
-        const hotbarIndex_X = (this.gameConfig.viewableArea.width / 2) - 250;
-        const hotbarIndex_Y = this.gameConfig.viewableArea.height - 50;
-
         // HotBarManager
-        this.hotbarManager = new HotBarManager(this, this.gameConfig, hotbarIndex_X, hotbarIndex_Y);
+        this.hotbarManager = new HotBarManager(this, this.gameConfig);
 
         // Setup the camera follows etc
         // TODO:- Move this into the camera manager

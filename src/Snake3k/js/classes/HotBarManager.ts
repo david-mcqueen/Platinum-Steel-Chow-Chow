@@ -4,24 +4,52 @@ import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 
 class HotBarManager extends Phaser.GameObjects.Container {
     private gameConfig: IGameConfig;
+    private gridConfig: IGridConfig;
     private hotButtons: Phaser.GameObjects.Group;
+    private buttonSize: number;
     private grid: AlignGrid;
 
-    constructor(scene: Phaser.Scene, gameConfig: IGameConfig, hotbarStart_X: number, hotbarStart_Y: number){
+    constructor(scene: Phaser.Scene, gameConfig: IGameConfig){
         super(scene);
         
         this.gameConfig = gameConfig;
+        this.buttonSize = 40;
 
-        this.addHotBar(hotbarStart_X, hotbarStart_Y);
-    }
-
-    private addHotBar = (hotbarStart_X: number, hotbarStart_Y: number) => {
-
-        for (let index = 0; index <= 9; index++) {
-            const rectHead = this.scene.add.rectangle(hotbarStart_X + (index * 50), hotbarStart_Y, 50, 50, 0xff0000, 0.75).setScrollFactor(0).setOrigin(0, 0);
-            rectHead.setDepth(10000);
+        this.gridConfig = {
+            height: this.buttonSize,
+            width: 450,
+            scene: scene,
+            columns: 10,
+            rows: 1
         }
 
+        this.gridConfig.gridOffset ={
+            x: (this.gameConfig.viewableArea.width / 2) - (this.gridConfig.width / 2) - (this.buttonSize / 2),
+            y: this.gameConfig.viewableArea.height - 75
+        }
+
+        this.grid = new AlignGrid(this.gridConfig);
+
+        this.addHotBar();
+    }
+
+    private addHotBar = () => {
+
+        for (let index = 0; index <= 9; index++) {
+            // const hotbarButton = this.scene.add.rectangle(0, 0, 75, 75, 0xff0000, 0.75).setScrollFactor(0).setOrigin(0, 0);
+
+            const graphics = this.scene.add.graphics();
+            graphics.lineStyle(2, 0xfae400, 0.3);
+            graphics.beginPath();
+
+            const hotbarButton = graphics.strokeRect(0, 0, 40, 40);
+            graphics.strokePath();
+
+            hotbarButton.setScrollFactor(0);            
+
+            hotbarButton.setDepth(10000);
+            this.grid.placeAtIndex(index, hotbarButton);
+        }
     }
 }
 
