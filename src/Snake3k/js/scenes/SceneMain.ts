@@ -17,10 +17,31 @@ import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig
 import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
 import Align from "../../../toolbox/js/classes/util/Align";
 
+interface IGameConfig {
+    playableArea: { // This is everwhere - the map as a whole
+        width: number,
+        height: number,
+        grid: {
+            cellHeight: number, // the pixel cell each grid cell should be
+            cellWidth: number,
+
+            width: number, // The number of cels
+            height: number
+        }
+    },
+    viewableArea: { // This is the size of the camera
+        width: number,
+        height: number
+    },
+    gameSpeed: number
+}
+
 class SceneMain extends Phaser.Scene {
 
     private gridCellHeight: number = 20;
     private gridCellWidth: number = 20;
+
+    private gameConfig: IGameConfig;
 
     private mediaManager: MediaManager;
 
@@ -32,15 +53,9 @@ class SceneMain extends Phaser.Scene {
     private scoreBox: ScoreBox;
     private cameraManager: CameraManager;
 
-    private gameSpeed: number = 100; // ms between moving the player
-    private gameMapArea = {
-        height: 1024 * 2, // Background image is 1024
-        width: 1024 * 2
-    }
-
     private get middleIndex(): number {
-        const cellsWidth = this.gameMapArea.width / this.gridCellWidth;
-        const cellsHeight = this.gameMapArea.height / this.gridCellHeight;
+        const cellsWidth = this.gameConfig.playableArea.width / this.gridCellWidth;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gridCellHeight;
 
         const cells = cellsWidth * cellsHeight
 
@@ -73,41 +88,41 @@ class SceneMain extends Phaser.Scene {
         this.load.image('background', backgroundImg);
         this.load.audio('coin', [coinSound]);
         this.load.audio('background_main', [backgroundMainSoundmp3]);
+        this.gameConfig = {
+            playableArea: {
+                width: 1020 * 2,
+                height: 1020 * 2,
+                grid: {
+                    cellHeight: 20,
+                    cellWidth: 20,
+    
+                    width: (1020 * 2) / 20, // How many cells width & height
+                    height: (1020 * 2) / 20
+                }
+            },
+            viewableArea: {
+                width: +this.game.config.width,
+                height: +this.game.config.height
+            },
+            gameSpeed: 100 // ms between moving the player
+        };
     }
 
     create(){
-        this.back_TL = this.add.image(0, 0, 'background');
-        Align.scaleToW(this.back_TL, 1, 1024)
-        this.back_TL.setOrigin(0, 0);
 
-        this.back_TR = this.add.image(1024, 0, "background");
-        Align.scaleToW(this.back_TR, 1, 1024)
-        this.back_TR.flipX = true;
-        this.back_TR.setOrigin(0, 0);
-
-        this.back_BL = this.add.image(0, 1024, 'background');
-        Align.scaleToW(this.back_BL, 1, 1024)
-        this.back_BL.flipY = true;
-        this.back_BL.setOrigin(0, 0);
-
-        this.back_BR = this.add.image(1024, 1024, 'background');
-        Align.scaleToW(this.back_BR, 1, 1024)
-        this.back_BR.flipY = true;
-        this.back_BR.flipX = true;
-        this.back_BR.setOrigin(0, 0);
-
+        this.addBackground();
 
         model.score = 0;
 
-        const columns = +this.gameMapArea.width / this.gridCellWidth;
-        const rows = +this.gameMapArea.height / this.gridCellHeight;
+        const columns = +this.gameConfig.playableArea.width / this.gridCellWidth;
+        const rows = +this.gameConfig.playableArea.height / this.gridCellHeight;
 
         // Grid
         this.gridConfig = {
             rows: rows,
             columns: columns,
-            height: this.gameMapArea.height,
-            width: this.gameMapArea.width,
+            height: this.gameConfig.playableArea.height,
+            width: this.gameConfig.playableArea.width,
             scene: this
         };
         
@@ -120,7 +135,7 @@ class SceneMain extends Phaser.Scene {
         this.player = new Player(90, 5, this, this.grid, this.gridConfig);
 
         // Cameras
-        this.cameras.main.setBounds(0, 0, +this.gameMapArea.width, +this.gameMapArea.height);
+        this.cameras.main.setBounds(0, 0, +this.gameConfig.playableArea.width, +this.gameConfig.playableArea.height);
         
         // CameraManager
         this.cameraManager = new CameraManager({scene: this}, this.cameras.main);
@@ -150,6 +165,28 @@ class SceneMain extends Phaser.Scene {
         this.addPortal();
         this.addPendingFood();
         // this.grid.debug();
+    }
+
+    private addBackground = () => {
+        this.back_TL = this.add.image(0, 0, 'background');
+        Align.scaleToW(this.back_TL, 1, 1024)
+        this.back_TL.setOrigin(0, 0);
+
+        this.back_TR = this.add.image(1024, 0, "background");
+        Align.scaleToW(this.back_TR, 1, 1024)
+        this.back_TR.flipX = true;
+        this.back_TR.setOrigin(0, 0);
+
+        this.back_BL = this.add.image(0, 1024, 'background');
+        Align.scaleToW(this.back_BL, 1, 1024)
+        this.back_BL.flipY = true;
+        this.back_BL.setOrigin(0, 0);
+
+        this.back_BR = this.add.image(1024, 1024, 'background');
+        Align.scaleToW(this.back_BR, 1, 1024)
+        this.back_BR.flipY = true;
+        this.back_BR.flipX = true;
+        this.back_BR.setOrigin(0, 0);
     }
 
     private portalActivated = () => {
@@ -212,7 +249,7 @@ class SceneMain extends Phaser.Scene {
         }
 
         // Only move if we have hit the epoch 
-        if(Math.floor(time) - this.gameSpeed > this.previousTime) {
+        if(Math.floor(time) - this.gameConfig.gameSpeed > this.previousTime) {
 
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
