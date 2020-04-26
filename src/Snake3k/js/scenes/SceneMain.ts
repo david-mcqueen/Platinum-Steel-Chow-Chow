@@ -129,7 +129,7 @@ class SceneMain extends Phaser.Scene {
         this.grid = new AlignGrid(this.gridConfig, this.game.config);
         
         // Score Box
-        this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
+        this.scoreBox = new ScoreBox({scene: this, x: this.gameConfig.viewableArea.width - 25, y: 25, originX: 1, originY: 1}, model); // 1 zoom
 
         // Player
         this.player = new Player(90, 5, this, this.grid, this.gridConfig);
