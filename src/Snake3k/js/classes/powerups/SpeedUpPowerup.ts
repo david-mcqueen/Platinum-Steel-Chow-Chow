@@ -1,7 +1,11 @@
 import PowerupType from "../../enums/PowerupType";
 import IPowerUp from "./IPowerUp";
+import { emitter } from "../../main";
+import Constants from "../../../../toolbox/js/Constants";
 
 class SpeedUpPowerup implements IPowerUp {
+
+    private readonly boundHotKey: string = Constants.HOTKEY_1;
 
     // Singleton
     private static _instance: SpeedUpPowerup;
@@ -17,7 +21,11 @@ class SpeedUpPowerup implements IPowerUp {
     
     private constructor() {
         this.type = PowerupType.SPEEDUP;
+
+        emitter.off(this.boundHotKey).on(this.boundHotKey, this.activate)
     }
+
+    // TODO:- Make a manager of a sort which each powerup adds its bound key to and then only 1 can be bound?
 
     public readonly type: PowerupType;
     private _quantity = 0;

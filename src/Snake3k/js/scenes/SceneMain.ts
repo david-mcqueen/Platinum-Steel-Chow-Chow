@@ -25,15 +25,27 @@ class SceneMain extends Phaser.Scene {
     private gameConfig: IGameConfig;
 
     private mediaManager: MediaManager;
+    private hotbarManager: HotBarManager;
 
     private grid: AlignGrid;
     private player: Player;
     private previousTime: number = 0;
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
-    private keyboardInput_H: Phaser.Input.Keyboard.Key;
+
+    private keyboardInput_Hotkey_1: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_2: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_3: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_4: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_5: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_6: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_7: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_8: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_9: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_0: Phaser.Input.Keyboard.Key;
+
+
     private scoreBox: ScoreBox;
     private cameraManager: CameraManager;
-    private hotbarManager: HotBarManager;
 
     private get middleIndex(): number {
         const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
@@ -144,7 +156,19 @@ class SceneMain extends Phaser.Scene {
         this.previousTime = this.game.getTime();
         
         this.cursorKeys = this.input.keyboard.createCursorKeys();
-        this.keyboardInput_H = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+
+        
+        this.keyboardInput_Hotkey_1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+        this.keyboardInput_Hotkey_2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
+        this.keyboardInput_Hotkey_3 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
+        this.keyboardInput_Hotkey_4 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
+        this.keyboardInput_Hotkey_5 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE);
+        this.keyboardInput_Hotkey_6 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
+        this.keyboardInput_Hotkey_7 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SEVEN);
+        this.keyboardInput_Hotkey_8 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.EIGHT);
+        this.keyboardInput_Hotkey_9 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE);
+        this.keyboardInput_Hotkey_0 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
+
         this.shouldAddFood = true;
 
         emitter.off(Constants.FOOD_EATEN).on(Constants.FOOD_EATEN, this.foodEaten);
@@ -262,10 +286,45 @@ class SceneMain extends Phaser.Scene {
             this.player.setTravelDirection(TravelDirection.RIGHT);
         }
 
-        // TODO:- Activate the powerup
-        // if (this.keyboardInput_H.isDown){
-        //     this.showCameraHints(true);
-        // }
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_1)){
+            emitter.emit(Constants.HOTKEY_1);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_2)){
+            emitter.emit(Constants.HOTKEY_2);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_3)){
+            emitter.emit(Constants.HOTKEY_3);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_4)){
+            emitter.emit(Constants.HOTKEY_4);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_5)){
+            emitter.emit(Constants.HOTKEY_5);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_6)){
+            emitter.emit(Constants.HOTKEY_6);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_7)){
+            emitter.emit(Constants.HOTKEY_7);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_8)){
+            emitter.emit(Constants.HOTKEY_8);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_9)){
+            emitter.emit(Constants.HOTKEY_9);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_0)){
+            emitter.emit(Constants.HOTKEY_0);
+        }
 
         // DEBUG:- Add tail piece
         if(this.cursorKeys.space.isDown){

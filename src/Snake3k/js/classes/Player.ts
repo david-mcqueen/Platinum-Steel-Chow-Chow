@@ -6,8 +6,6 @@ import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import Food from "./Food";
 import Constants from "../../../toolbox/js/Constants";
 import IGameConfig from "../IGameConfig";
-import InventoryManager from "./InventoryManager";
-import SpeedUpPowerup from "./powerups/SpeedUpPowerup";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part

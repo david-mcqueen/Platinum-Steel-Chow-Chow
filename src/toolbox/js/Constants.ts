@@ -13,6 +13,17 @@ class Constants{
     public static readonly MUSIC_CHANGED = "MUSIC_CHANGED";
     public static readonly TOGGLE_MUSIC = "TOGGLE_MUSIC";
     public static readonly TOGGLE_SFX = "TOGGLE_SFX";
+
+    public static readonly HOTKEY_1 = "HOTKEY_1";
+    public static readonly HOTKEY_2 = "HOTKEY_2";
+    public static readonly HOTKEY_3 = "HOTKEY_3";
+    public static readonly HOTKEY_4 = "HOTKEY_4";
+    public static readonly HOTKEY_5 = "HOTKEY_5";
+    public static readonly HOTKEY_6 = "HOTKEY_6";
+    public static readonly HOTKEY_7 = "HOTKEY_7";
+    public static readonly HOTKEY_8 = "HOTKEY_8";
+    public static readonly HOTKEY_9 = "HOTKEY_9";
+    public static readonly HOTKEY_0 = "HOTKEY_0";
 }
 
 export default Constants;
