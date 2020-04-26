@@ -1,14 +1,26 @@
 import PowerupType from "../../enums/PowerupType";
 import IPowerUp from "./IPowerUp";
-import PowerupBase from "./PowerupBase";
 
-class SpeedUpPowerup extends PowerupBase implements IPowerUp {
+class SpeedUpPowerup implements IPowerUp {
 
-    constructor() {
-        super(PowerupType.SPEEDUP);
+    // Singleton
+    private static _instance: SpeedUpPowerup;
+
+    public static get instance(): SpeedUpPowerup {
+
+        if(!SpeedUpPowerup._instance){
+            SpeedUpPowerup._instance = new SpeedUpPowerup();
+        }
+
+        return SpeedUpPowerup._instance;
+    }
+    
+    private constructor() {
+        this.type = PowerupType.SPEEDUP;
     }
 
-    _quantity = 0;
+    public readonly type: PowerupType;
+    private _quantity = 0;
 
     set quantity(val: number) {
         this._quantity = val;

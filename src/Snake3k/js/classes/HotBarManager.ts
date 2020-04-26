@@ -43,8 +43,14 @@ class HotBarManager extends Phaser.GameObjects.Container {
     private addHotBar = () => {
 
         for (let index = 1; index <= 9; index++) {
-            // const hotbarButton = this.scene.add.rectangle(0, 0, 75, 75, 0xff0000, 0.75).setScrollFactor(0).setOrigin(0, 0);
-            this.drawButton(index - 1, `${index}`, new SpeedUpPowerup())
+            let powerUp: IPowerUp;
+
+            switch (index) {
+                case 1:
+                    powerUp = SpeedUpPowerup.instance;
+                    break;
+            }
+            this.drawButton(index - 1, `${index}`, powerUp)
         }
         this.drawButton(9, `0`);
     }
