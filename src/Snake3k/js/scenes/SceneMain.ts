@@ -15,31 +15,10 @@ import MediaManager from "../../../toolbox/js/classes/util/MediaManager";
 import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig";
 
 import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
-import Align from "../../../toolbox/js/classes/util/Align";
-
-interface IGameConfig {
-    playableArea: { // This is everwhere - the map as a whole
-        width: number,
-        height: number,
-        grid: {
-            cellHeight: number, // the pixel cell each grid cell should be
-            cellWidth: number,
-
-            width: number, // The number of cels
-            height: number
-        }
-    },
-    viewableArea: { // This is the size of the camera
-        width: number,
-        height: number
-    },
-    gameSpeed: number
-}
+import Align from "../../../toolbox/js/classes/util/Align"; 
+import IGameConfig from "../IGameConfig";
 
 class SceneMain extends Phaser.Scene {
-
-    private gridCellHeight: number = 20;
-    private gridCellWidth: number = 20;
 
     private gameConfig: IGameConfig;
 
@@ -54,8 +33,8 @@ class SceneMain extends Phaser.Scene {
     private cameraManager: CameraManager;
 
     private get middleIndex(): number {
-        const cellsWidth = this.gameConfig.playableArea.width / this.gridCellWidth;
-        const cellsHeight = this.gameConfig.playableArea.height / this.gridCellHeight;
+        const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.height;
 
         const cells = cellsWidth * cellsHeight
 
@@ -114,8 +93,8 @@ class SceneMain extends Phaser.Scene {
 
         model.score = 0;
 
-        const columns = +this.gameConfig.playableArea.width / this.gridCellWidth;
-        const rows = +this.gameConfig.playableArea.height / this.gridCellHeight;
+        const columns = +this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const rows = +this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
 
         // Grid
         this.gridConfig = {
