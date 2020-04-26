@@ -5,11 +5,13 @@ import { game, emitter } from "../main";
 import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import Food from "./Food";
 import Constants from "../../../toolbox/js/Constants";
+import IGameConfig from "../IGameConfig";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
     private gridConfig: IGridConfig;
+    private gameConfig: IGameConfig;
     private addTailPiece: boolean;
     private _isDead: boolean = false;
 
@@ -38,13 +40,14 @@ class Player extends Phaser.GameObjects.Container {
         return fullPosition;
     }
 
-    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig) {
+    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig, gameConfig: IGameConfig) {
         super(scene);
 
         this.scene = scene;
         this.parts = this.scene.add.group();
         this.grid = grid;
         this.gridConfig = gridConfig;
+        this.gameConfig = gameConfig;
 
         const rectHead = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
         rectHead.setDepth(100);
@@ -145,7 +148,7 @@ class Player extends Phaser.GameObjects.Container {
         this.scene.tweens.add({
             targets: this.parts.getChildren(),
             duration: 1000,
-            y: game.config.height,
+            y: this.gameConfig.playableArea.height,
             angle: -270,
             onComplete: callback,
             completeDelay: 1000

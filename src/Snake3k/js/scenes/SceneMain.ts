@@ -111,7 +111,7 @@ class SceneMain extends Phaser.Scene {
         this.scoreBox = new ScoreBox({scene: this, x: this.gameConfig.viewableArea.width - 25, y: 25, originX: 1, originY: 1}, model); // 1 zoom
 
         // Player
-        this.player = new Player(90, 5, this, this.grid, this.gridConfig);
+        this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);
 
         // Cameras
         this.cameras.main.setBounds(0, 0, +this.gameConfig.playableArea.width, +this.gameConfig.playableArea.height);
@@ -202,11 +202,12 @@ class SceneMain extends Phaser.Scene {
 
     private growPortal = () => {
 
-        this.targetPortalRadius = this.portal.radius * 1.125;
+        // If we are already growing, we can keep on growing based on the target size
+        this.targetPortalRadius = (this.targetPortalRadius ? this.targetPortalRadius : this.portal.radius) * 1.125;
 
         this.tweens.add({
             targets: this.portal,
-            duration: 2500,
+            duration: 5000,
             radius: this.targetPortalRadius,
             onUpdate: (tweens: Phaser.Tweens.Tween, target: any) => {
                 this.drawPortalBorder(0, 0, target.radius);
