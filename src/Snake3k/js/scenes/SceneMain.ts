@@ -17,6 +17,7 @@ import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig
 import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
 import Align from "../../../toolbox/js/classes/util/Align"; 
 import IGameConfig from "../IGameConfig";
+import HotBarManager from "../classes/HotBarManager";
 
 class SceneMain extends Phaser.Scene {
 
@@ -31,6 +32,7 @@ class SceneMain extends Phaser.Scene {
     private keyboardInput_H: Phaser.Input.Keyboard.Key;
     private scoreBox: ScoreBox;
     private cameraManager: CameraManager;
+    private hotbarManager: HotBarManager;
 
     private get middleIndex(): number {
         const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
@@ -105,7 +107,7 @@ class SceneMain extends Phaser.Scene {
             scene: this
         };
         
-        this.grid = new AlignGrid(this.gridConfig, this.game.config);
+        this.grid = new AlignGrid(this.gridConfig);
         
         // Score Box
         this.scoreBox = new ScoreBox({scene: this, x: this.gameConfig.viewableArea.width - 25, y: 25, originX: 1, originY: 1}, model); // 1 zoom
@@ -119,10 +121,18 @@ class SceneMain extends Phaser.Scene {
         // CameraManager
         this.cameraManager = new CameraManager({scene: this}, this.cameras.main, this.gameConfig);
 
+        const hotbarIndex_X = (this.gameConfig.viewableArea.width / 2) - 250;
+        const hotbarIndex_Y = this.gameConfig.viewableArea.height - 50;
+
+        // HotBarManager
+        this.hotbarManager = new HotBarManager(this, this.gameConfig, hotbarIndex_X, hotbarIndex_Y);
+
+        // Setup the camera follows etc
+        // TODO:- Move this into the camera manager
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
         this.cameras.main.setViewport(0, 0, +this.game.config.width, +this.game.config.height);
-        
+
         // Media Manager
         if (!this.mediaManager){
         const mediaConfig: IMediaManagerConfig = {

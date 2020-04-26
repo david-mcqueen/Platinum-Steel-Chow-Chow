@@ -7,7 +7,7 @@ class AlignGrid {
     private ch: number;
     private graphics: Phaser.GameObjects.Graphics;
 
-    constructor(config: IGridConfig, gameConfig: Phaser.Core.Config) {
+    constructor(config: IGridConfig) {
         this.config = config;
 
         if(!config.scene){
@@ -19,12 +19,6 @@ class AlignGrid {
         }
         if(!config.columns){
             config.columns = 5;
-        }
-        if(!config.height){
-            config.height = +gameConfig.height;
-        }
-        if(!config.width){
-            config.width = +gameConfig.width;
         }
 
         this.scene = config.scene;
