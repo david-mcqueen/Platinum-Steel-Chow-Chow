@@ -155,11 +155,12 @@ class CameraManager extends Phaser.GameObjects.Container {
 
     // TODO:- Make generic
     private objectInCameraViewport = (obj: any): boolean => {
-        const x = this.camera.midPoint.x - 250;
-        const width = this.camera.midPoint.x + 250;
+        const hintAreaPct = 0.65; // The area which doesn't show hints for.
+        const x = this.camera.midPoint.x - (this.gameConfig.viewableArea.width * hintAreaPct);
+        const width = this.camera.midPoint.x + (this.gameConfig.viewableArea.width * hintAreaPct);
         
-        const y = this.camera.midPoint.y - 250;
-        const height = this.camera.midPoint.y + 250;
+        const y = this.camera.midPoint.y - (this.gameConfig.viewableArea.height * hintAreaPct);
+        const height = this.camera.midPoint.y + (this.gameConfig.viewableArea.height * hintAreaPct);
 
         const bounds = new Phaser.Geom.Rectangle(x, y, width, height);
         return bounds.contains(obj.x, obj.y);
