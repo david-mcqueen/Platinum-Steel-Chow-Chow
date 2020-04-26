@@ -19,6 +19,8 @@ import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
 import Align from "../../../toolbox/js/classes/util/Align"; 
 import IGameConfig from "../IGameConfig";
 import HotBarManager from "../classes/HotBarManager";
+import SpeedUpPowerup from "../classes/powerups/SpeedUpPowerup";
+import SlowDownPowerup from "../classes/powerups/SlowDownPowerUp";
 
 class SceneMain extends Phaser.Scene {
 
@@ -141,6 +143,11 @@ class SceneMain extends Phaser.Scene {
 
         // HotBarManager
         this.hotbarManager = new HotBarManager(this, this.gameConfig);
+
+
+        // TODO:- Debugging!
+        SpeedUpPowerup.instance.increaseQuantity();
+        SlowDownPowerup.instance.increaseQuantity();
 
         // Player
         this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);

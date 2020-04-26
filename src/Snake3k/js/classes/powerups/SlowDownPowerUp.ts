@@ -4,20 +4,20 @@ import { emitter } from "../../main";
 import Constants from "../../../../toolbox/js/Constants";
 import TintGradients from "./TintGradients";
 
-class SpeedUpPowerup implements IPowerUp {
+class SlowDownPowerup implements IPowerUp {
 
-    private readonly boundHotKey: string = Constants.HOTKEY_1;
+    private readonly boundHotKey: string = Constants.HOTKEY_2;
 
     // Singleton
-    private static _instance: SpeedUpPowerup;
+    private static _instance: SlowDownPowerup;
 
-    public static get instance(): SpeedUpPowerup {
+    public static get instance(): SlowDownPowerup {
 
-        if(!SpeedUpPowerup._instance){
-            SpeedUpPowerup._instance = new SpeedUpPowerup();
+        if(!SlowDownPowerup._instance){
+            SlowDownPowerup._instance = new SlowDownPowerup();
         }
 
-        return SpeedUpPowerup._instance;
+        return SlowDownPowerup._instance;
     }
     
     private constructor() {
@@ -42,7 +42,7 @@ class SpeedUpPowerup implements IPowerUp {
         this.updateHotbarVisibility();
     }
 
-    displayColorTint = TintGradients.RED;
+    displayColorTint = TintGradients.BLUE;
 
     activate = () => {
         if (this._quantity > 0){
@@ -57,4 +57,4 @@ class SpeedUpPowerup implements IPowerUp {
     }
 }
 
-export default SpeedUpPowerup;
+export default SlowDownPowerup;

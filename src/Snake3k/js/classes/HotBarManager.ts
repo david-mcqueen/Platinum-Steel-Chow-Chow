@@ -6,6 +6,7 @@ import Constants from "../../../toolbox/js/Constants";
 import PowerupType from "../enums/PowerupType";
 import IPowerUp from "./powerups/IPowerUp";
 import SpeedUpPowerup from "./powerups/SpeedUpPowerup";
+import SlowDownPowerup from "./powerups/SlowDownPowerUp";
 
 class HotBarManager extends Phaser.GameObjects.Container {
     private gameConfig: IGameConfig;
@@ -49,6 +50,8 @@ class HotBarManager extends Phaser.GameObjects.Container {
                 case 1:
                     powerUp = SpeedUpPowerup.instance;
                     break;
+                case 2:
+                    powerUp = SlowDownPowerup.instance
             }
             this.drawButton(index - 1, `${index}`, powerUp)
         }
