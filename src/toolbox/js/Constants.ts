@@ -24,6 +24,9 @@ class Constants{
     public static readonly HOTKEY_8 = "HOTKEY_8";
     public static readonly HOTKEY_9 = "HOTKEY_9";
     public static readonly HOTKEY_0 = "HOTKEY_0";
+
+    public static readonly POWERUP_SPEED_UP_ACTIVATED = "POWERUP_SPEED_UP_ACTIVATED";
+    public static readonly POWERUP_SLOW_DOWN_ACTIVATED = "POWERUP_SLOW_DOWN_ACTIVATED";
 }
 
 export default Constants;

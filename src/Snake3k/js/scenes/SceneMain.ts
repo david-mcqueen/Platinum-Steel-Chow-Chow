@@ -101,7 +101,9 @@ class SceneMain extends Phaser.Scene {
                 width: +this.game.config.width,
                 height: +this.game.config.height
             },
-            gameSpeed: 100 // ms between moving the player
+            gameSpeed: 100, // ms between moving the player
+            gameSpeedModifier: 50,
+            powerupDuration: 30000 // 30 seconds
         };
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -180,9 +182,30 @@ class SceneMain extends Phaser.Scene {
         emitter.off(Constants.FOOD_EATEN).on(Constants.FOOD_EATEN, this.foodEaten);
         emitter.off(Constants.PORTAL_ACTIVATED).on(Constants.PORTAL_ACTIVATED, this.portalActivated);
 
+        emitter.off(Constants.POWERUP_SPEED_UP_ACTIVATED).on(Constants.POWERUP_SPEED_UP_ACTIVATED, this.increasePlayerSpeed)
+        emitter.off(Constants.POWERUP_SLOW_DOWN_ACTIVATED).on(Constants.POWERUP_SLOW_DOWN_ACTIVATED, this.decreasePlayerSpeed)
+
+        
         this.addPortal();
         this.addPendingFood();
         // this.grid.debug();
+    }
+
+    private increasePlayerSpeed = () => {
+        
+        this.gameConfig.gameSpeed -= this.gameConfig.gameSpeedModifier;
+
+        setTimeout(() => {
+            this.gameConfig.gameSpeed += this.gameConfig.gameSpeedModifier;
+        }, this.gameConfig.powerupDuration);
+    }
+
+    private decreasePlayerSpeed = () => {
+        this.gameConfig.gameSpeed += this.gameConfig.gameSpeedModifier;
+
+        setTimeout(() => {
+            this.gameConfig.gameSpeed -= this.gameConfig.gameSpeedModifier;
+        }, this.gameConfig.powerupDuration);
     }
 
     private addBackground = () => {

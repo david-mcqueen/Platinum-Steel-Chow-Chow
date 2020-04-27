@@ -14,7 +14,9 @@ interface IGameConfig {
         width: number,
         height: number
     },
-    gameSpeed: number
+    gameSpeed: number,
+    gameSpeedModifier: number, // How much powerups should modify the player speed
+    powerupDuration: number // How long powerups should last
 }
 
 export default IGameConfig;

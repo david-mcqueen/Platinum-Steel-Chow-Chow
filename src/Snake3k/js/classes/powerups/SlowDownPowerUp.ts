@@ -46,7 +46,9 @@ class SlowDownPowerup implements IPowerUp {
 
     activate = () => {
         if (this._quantity > 0){
-            console.log("activate");
+            
+            emitter.emit(Constants.POWERUP_SLOW_DOWN_ACTIVATED);
+
             this._quantity--;
             this.updateHotbarVisibility();
         }
