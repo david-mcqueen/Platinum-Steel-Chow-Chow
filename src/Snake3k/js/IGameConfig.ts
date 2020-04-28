@@ -15,8 +15,24 @@ interface IGameConfig {
         height: number
     },
     gameSpeed: number,
-    gameSpeedModifier: number, // How much powerups should modify the player speed
-    powerupDuration: number // How long powerups should last
+    powerUps: {
+        gameSpeedModifier: number, // How much powerups should modify the player speed
+        powerupDuration: number, // How long powerups should last
+    }
+    portalModifier: {
+        max: number,
+        min: number
+    },
+    cameraHints: {
+        hintAreaPct: number
+    },
+    deptLevels: {
+        portal: number,
+        hotbar: number,
+        player: number,
+        cameraHints: number,
+    }
+
 }
 
 export default IGameConfig;

@@ -148,14 +148,14 @@ class CameraManager extends Phaser.GameObjects.Container {
             hintRect.EndDeg = hint.endDeg;
             hintRect.goToBounds = hint.bounds;
             hintRect.setVisible(false);
-            hintRect.setDepth(10000);
+            hintRect.setDepth(this.gameConfig.deptLevels.cameraHints);
             this.cameraHints.add(hintRect);
         });
     }
 
     // TODO:- Make generic
     private objectInCameraViewport = (obj: any): boolean => {
-        const hintAreaPct = 0.65; // The area which doesn't show hints for.
+        const hintAreaPct = this.gameConfig.cameraHints.hintAreaPct; // The area which doesn't show hints for.
         const x = this.camera.midPoint.x - (this.gameConfig.viewableArea.width * hintAreaPct);
         const width = this.camera.midPoint.x + (this.gameConfig.viewableArea.width * hintAreaPct);
         

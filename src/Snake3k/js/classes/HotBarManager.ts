@@ -68,11 +68,11 @@ class HotBarManager extends Phaser.GameObjects.Container {
     
         hotbarButton.setScrollFactor(0);
     
-        hotbarButton.setDepth(10000);
+        hotbarButton.setDepth(this.gameConfig.deptLevels.hotbar);
         this.grid.placeAtIndex(indexPosition, hotbarButton);
     
         const label = this.scene.add.text(0, 0, `${labelString}`)
-        label.setScrollFactor(0).setOrigin(0, 0).setDepth(10000);
+        label.setScrollFactor(0).setOrigin(0, 0).setDepth(this.gameConfig.deptLevels.hotbar);
         this.grid.placeAtIndex(indexPosition, label);
 
         if (powerUp){
@@ -94,6 +94,7 @@ class HotBarManager extends Phaser.GameObjects.Container {
         this.grid.placeAtIndex(index, orb);
         orb.x += 8;
         orb.y += 8;
+        orb.setDepth(this.gameConfig.deptLevels.hotbar);
 
         orb.setVisible(false);
         powerUp.orb = orb;

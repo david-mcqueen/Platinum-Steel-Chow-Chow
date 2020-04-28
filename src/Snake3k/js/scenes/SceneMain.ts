@@ -102,8 +102,23 @@ class SceneMain extends Phaser.Scene {
                 height: +this.game.config.height
             },
             gameSpeed: 100, // ms between moving the player
-            gameSpeedModifier: 50,
-            powerupDuration: 30000 // 30 seconds
+            powerUps: {
+                gameSpeedModifier: 50,
+                powerupDuration: 30000, // 30 seconds
+            },
+            portalModifier: {
+                max: 10,
+                min: -1
+            },
+            cameraHints: {
+                hintAreaPct: 58
+            },
+            deptLevels: {
+                cameraHints: 10000,
+                hotbar: 10000,
+                player: 1000,
+                portal: 1000
+            }
         };
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -193,19 +208,19 @@ class SceneMain extends Phaser.Scene {
 
     private increasePlayerSpeed = () => {
         
-        this.gameConfig.gameSpeed -= this.gameConfig.gameSpeedModifier;
+        this.gameConfig.gameSpeed -= this.gameConfig.powerUps.gameSpeedModifier;
 
         setTimeout(() => {
-            this.gameConfig.gameSpeed += this.gameConfig.gameSpeedModifier;
-        }, this.gameConfig.powerupDuration);
+            this.gameConfig.gameSpeed += this.gameConfig.powerUps.gameSpeedModifier;
+        }, this.gameConfig.powerUps.powerupDuration);
     }
 
     private decreasePlayerSpeed = () => {
-        this.gameConfig.gameSpeed += this.gameConfig.gameSpeedModifier;
+        this.gameConfig.gameSpeed += this.gameConfig.powerUps.gameSpeedModifier;
 
         setTimeout(() => {
-            this.gameConfig.gameSpeed -= this.gameConfig.gameSpeedModifier;
-        }, this.gameConfig.powerupDuration);
+            this.gameConfig.gameSpeed -= this.gameConfig.powerUps.gameSpeedModifier;
+        }, this.gameConfig.powerUps.powerupDuration);
     }
 
     private addBackground = () => {
@@ -249,22 +264,28 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc = graphics.arc(x, y, radius, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), true);
 
-        this.graphicsarc.setDepth(1000);
+        this.graphicsarc.setDepth(this.gameConfig.deptLevels.portal);
         graphics.strokePath();
         this.grid.placeAtIndex(this.middleIndex, this.graphicsarc);
     }
 
     private addPortal = () => {
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
-        this.portal.setDepth(1000);
+        this.portal.setDepth(this.gameConfig.deptLevels.portal);
         this.grid.placeAtIndex(this.middleIndex, this.portal);
         this.drawPortalBorder(0, 0, 100);
     }
 
     private growPortal = () => {
 
+        const portalModifier = this.gameConfig.portalModifier;
+
+        const growAmount = 1 + ((Math.floor(Math.random() * (portalModifier.max - portalModifier.min  + 1)) + portalModifier.min) / 100);
+
+        console.log(`growing portal by ${growAmount}`);
+
         // If we are already growing, we can keep on growing based on the target size
-        this.targetPortalRadius = (this.targetPortalRadius ? this.targetPortalRadius : this.portal.radius) * 1.125;
+        this.targetPortalRadius = (this.targetPortalRadius ? this.targetPortalRadius : this.portal.radius) * growAmount;
 
         this.tweens.add({
             targets: this.portal,
@@ -276,11 +297,19 @@ class SceneMain extends Phaser.Scene {
         });
     }
 
+    private shouldGrowPortal = () : boolean => {
+        // 50% change of growing portal
+        return Math.floor(Math.random() * 100) > 50;
+    }
+
     private foodEaten = (food: Food) => {
         this.removeFoodItem(food);
         this.shouldAddFood = true;
 
-        this.growPortal();
+        if (this.shouldGrowPortal()){
+            this.growPortal();
+        }
+
         this.addPendingFood();
     }
 
@@ -399,7 +428,7 @@ class SceneMain extends Phaser.Scene {
 
         this.shouldAddFood = false;
         const food = this.add.rectangle(0, 0, 10, 10, 0xffffff) as Food;
-        food.setDepth(1000)
+        food.setDepth(this.gameConfig.deptLevels.portal)
         
         const placement = this.getRandomIndex();
         
