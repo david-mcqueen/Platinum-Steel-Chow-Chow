@@ -27,6 +27,7 @@ class Constants{
 
     public static readonly POWERUP_SPEED_UP_ACTIVATED = "POWERUP_SPEED_UP_ACTIVATED";
     public static readonly POWERUP_SLOW_DOWN_ACTIVATED = "POWERUP_SLOW_DOWN_ACTIVATED";
+    public static readonly POWERUP_SHRINK_PORTAL_ACTIVATED = "POWERUP_SHRINK_PORTAL_ACTIVATED";
 }
 
 export default Constants;

@@ -34,7 +34,6 @@ class MediaManager {
     }
 
     public setBackgroundMusic = (key: string) => {
-        console.log(this.background_title);
         this.background_title = this.screen.sound.add(key, {volume: 0.5, loop: true});
         this.musicChanged();
     }

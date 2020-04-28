@@ -21,6 +21,7 @@ import IGameConfig from "../IGameConfig";
 import HotBarManager from "../classes/HotBarManager";
 import SpeedUpPowerup from "../classes/powerups/SpeedUpPowerup";
 import SlowDownPowerup from "../classes/powerups/SlowDownPowerUp";
+import ShrinkPortalPowerUp from "../classes/powerups/ShrinkPortalPowerUp";
 
 class SceneMain extends Phaser.Scene {
 
@@ -105,6 +106,10 @@ class SceneMain extends Phaser.Scene {
             powerUps: {
                 gameSpeedModifier: 50,
                 powerupDuration: 30000, // 30 seconds
+                portal: {
+                    shirnk: 0.8,
+                    grow: 1.2
+                }
             },
             portalModifier: {
                 max: 10,
@@ -117,7 +122,7 @@ class SceneMain extends Phaser.Scene {
                 cameraHints: 10000,
                 hotbar: 10000,
                 player: 1000,
-                portal: 1000
+                portal: 2000
             }
         };
 
@@ -165,6 +170,7 @@ class SceneMain extends Phaser.Scene {
         // TODO:- Debugging!
         SpeedUpPowerup.instance.increaseQuantity();
         SlowDownPowerup.instance.increaseQuantity();
+        ShrinkPortalPowerUp.instance.increaseQuantity();
 
         // Player
         this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);
@@ -199,11 +205,16 @@ class SceneMain extends Phaser.Scene {
 
         emitter.off(Constants.POWERUP_SPEED_UP_ACTIVATED).on(Constants.POWERUP_SPEED_UP_ACTIVATED, this.increasePlayerSpeed)
         emitter.off(Constants.POWERUP_SLOW_DOWN_ACTIVATED).on(Constants.POWERUP_SLOW_DOWN_ACTIVATED, this.decreasePlayerSpeed)
+        emitter.off(Constants.POWERUP_SHRINK_PORTAL_ACTIVATED).on(Constants.POWERUP_SHRINK_PORTAL_ACTIVATED, this.shrinkPortal);
 
         
         this.addPortal();
         this.addPendingFood();
         // this.grid.debug();
+    }
+
+    private shrinkPortal = () => {
+        this.growPortal(this.gameConfig.powerUps.portal.shirnk);
     }
 
     private increasePlayerSpeed = () => {
@@ -276,13 +287,15 @@ class SceneMain extends Phaser.Scene {
         this.drawPortalBorder(0, 0, 100);
     }
 
-    private growPortal = () => {
+    private growPortal = (portalGrowAmount?: number) => {
 
         const portalModifier = this.gameConfig.portalModifier;
 
-        const growAmount = 1 + ((Math.floor(Math.random() * (portalModifier.max - portalModifier.min  + 1)) + portalModifier.min) / 100);
+        let growAmount = 1 + ((Math.floor(Math.random() * (portalModifier.max - portalModifier.min  + 1)) + portalModifier.min) / 100);
 
-        console.log(`growing portal by ${growAmount}`);
+        if (portalGrowAmount){
+            growAmount = portalGrowAmount;
+        }
 
         // If we are already growing, we can keep on growing based on the target size
         this.targetPortalRadius = (this.targetPortalRadius ? this.targetPortalRadius : this.portal.radius) * growAmount;

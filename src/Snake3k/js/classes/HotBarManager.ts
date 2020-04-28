@@ -7,6 +7,7 @@ import PowerupType from "../enums/PowerupType";
 import IPowerUp from "./powerups/IPowerUp";
 import SpeedUpPowerup from "./powerups/SpeedUpPowerup";
 import SlowDownPowerup from "./powerups/SlowDownPowerUp";
+import ShrinkPortalPowerUp from "./powerups/ShrinkPortalPowerUp";
 
 class HotBarManager extends Phaser.GameObjects.Container {
     private gameConfig: IGameConfig;
@@ -51,7 +52,11 @@ class HotBarManager extends Phaser.GameObjects.Container {
                     powerUp = SpeedUpPowerup.instance;
                     break;
                 case 2:
-                    powerUp = SlowDownPowerup.instance
+                    powerUp = SlowDownPowerup.instance;
+                    break;
+                case 3:
+                    powerUp = ShrinkPortalPowerUp.instance;
+                    break;
             }
             this.drawButton(index - 1, `${index}`, powerUp)
         }
@@ -83,7 +88,6 @@ class HotBarManager extends Phaser.GameObjects.Container {
     private dislpayInventory = (inventory: {[key: string] : number}) => {
         console.log("displaying invetory");
         console.log(inventory);
-
     }
 
     private addPowerUpImg = (index: number, powerUp: IPowerUp) => {

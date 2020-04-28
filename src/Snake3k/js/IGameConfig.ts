@@ -18,6 +18,10 @@ interface IGameConfig {
     powerUps: {
         gameSpeedModifier: number, // How much powerups should modify the player speed
         powerupDuration: number, // How long powerups should last
+        portal: {
+            shirnk: number,
+            grow: number,
+        }
     }
     portalModifier: {
         max: number,

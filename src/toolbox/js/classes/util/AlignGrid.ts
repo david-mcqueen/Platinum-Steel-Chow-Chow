@@ -89,7 +89,6 @@ class AlignGrid {
     // Usefor for if the starting position has moved (e.g. following the camera)
     public placeAtCoordinatesOfIndexCurrentPosition = (index: number, obj: any): void => {
         const position = this.getCoordinatesOfIndex(index);
-        console.log(`placing at: ${position.x} ${position.y}`);
         obj.x = position.x;
         obj.y = position.y;
     }

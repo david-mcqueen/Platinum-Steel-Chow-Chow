@@ -43,7 +43,6 @@ class SceneTitle extends Phaser.Scene {
     }
 
     create() {
-        console.log('SceneTitle create');
         this.grid = new AlignGrid({rows: 11, columns: 11, scene: this, height: +this.game.config.height, width: +this.game.config.width});
         this.soundButtons = new SoundButtons({scene: this, gameConfig: this.game.config}, model);
         
