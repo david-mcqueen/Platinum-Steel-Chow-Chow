@@ -111,7 +111,7 @@ class SceneMain extends Phaser.Scene {
                 min: -1
             },
             cameraHints: {
-                hintAreaPct: 58
+                hintAreaPadding: 100 // pixes each side
             },
             deptLevels: {
                 cameraHints: 10000,

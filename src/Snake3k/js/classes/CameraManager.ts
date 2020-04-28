@@ -155,12 +155,25 @@ class CameraManager extends Phaser.GameObjects.Container {
 
     // TODO:- Make generic
     private objectInCameraViewport = (obj: any): boolean => {
-        const hintAreaPct = this.gameConfig.cameraHints.hintAreaPct; // The area which doesn't show hints for.
-        const x = this.camera.midPoint.x - (this.gameConfig.viewableArea.width * hintAreaPct);
-        const width = this.camera.midPoint.x + (this.gameConfig.viewableArea.width * hintAreaPct);
-        
-        const y = this.camera.midPoint.y - (this.gameConfig.viewableArea.height * hintAreaPct);
-        const height = this.camera.midPoint.y + (this.gameConfig.viewableArea.height * hintAreaPct);
+        const hintAreaPadding = this.gameConfig.cameraHints.hintAreaPadding; // The area around the camera to not show hints for
+
+        // The camera.midPoint is the GameArea coordinates that the camera is currently above
+
+        const viewableWidth = this.gameConfig.viewableArea.width;
+        const viewableHeight = this.gameConfig.viewableArea.height;
+
+        // Get the top left camera coordinate
+        let x = this.camera.midPoint.x - (viewableWidth / 2); 
+        let y = this.camera.midPoint.y - (viewableHeight / 2);
+
+        // Adjust them to account for the padding
+        x -= hintAreaPadding;
+        y -= hintAreaPadding;
+
+
+        // However much we are padding, we need to account for x,y having moved and then also cover the opposite edge as well (hence the *2)
+        const width = viewableWidth + (hintAreaPadding * 2);
+        const height = viewableHeight + (hintAreaPadding * 2);
 
         const bounds = new Phaser.Geom.Rectangle(x, y, width, height);
         return bounds.contains(obj.x, obj.y);

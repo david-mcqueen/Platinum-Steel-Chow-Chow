@@ -24,7 +24,7 @@ interface IGameConfig {
         min: number
     },
     cameraHints: {
-        hintAreaPct: number
+        hintAreaPadding: number // Pixels each side to not show hints for
     },
     deptLevels: {
         portal: number,
