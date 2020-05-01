@@ -9,6 +9,7 @@ interface IGameConfig {
             width: number, // The number of cels
             height: number
         }
+        backgroundRepeat: number
     },
     viewableArea: { // This is the size of the camera
         width: number,

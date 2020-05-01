@@ -61,7 +61,18 @@ class SceneMain extends Phaser.Scene {
         // minus half the width to get to the middle
         const mid = halfWay - (cellsWidth / 2);
 
+
         return mid;
+    }
+
+    private get midIndexCoordinates() : {x: number, y: number} {
+        const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
+        return {
+            x: cellsWidth / 2,
+            y: cellsHeight / 2
+        }
+        
     }
 
     private gridConfig: IGridConfig;
@@ -86,17 +97,20 @@ class SceneMain extends Phaser.Scene {
         this.load.image('powerup', powerUpImg);
         this.load.audio('coin', [coinSound]);
         this.load.audio('background_main', [backgroundMainSoundmp3]);
+        const backgroundSize = 1020;
+        const backgroundRepeat = 2; // 1 for single player. 1 for multiplayer
         this.gameConfig = {
             playableArea: {
-                width: 1020 * 2,
-                height: 1020 * 2,
+                width: backgroundSize * backgroundRepeat,
+                height: backgroundSize * backgroundRepeat,
                 grid: {
                     cellHeight: 20,
                     cellWidth: 20,
     
-                    width: (1020 * 2) / 20, // How many cells width & height
-                    height: (1020 * 2) / 20
-                }
+                    width: (backgroundSize * backgroundRepeat) / 20, // How many cells width & height
+                    height: (backgroundSize * backgroundRepeat) / 20
+                },
+                backgroundRepeat: backgroundRepeat
             },
             viewableArea: {
                 width: +this.game.config.width,
@@ -239,6 +253,10 @@ class SceneMain extends Phaser.Scene {
         Align.scaleToW(this.back_TL, 1, 1024)
         this.back_TL.setOrigin(0, 0);
 
+        if (this.gameConfig.playableArea.backgroundRepeat === 1){
+            return;
+        }
+
         this.back_TR = this.add.image(1024, 0, "background");
         Align.scaleToW(this.back_TR, 1, 1024)
         this.back_TR.flipX = true;
@@ -277,13 +295,19 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc.setDepth(this.gameConfig.deptLevels.portal);
         graphics.strokePath();
-        this.grid.placeAtIndex(this.middleIndex, this.graphicsarc);
+
+        const midIndexCoordinates = this.midIndexCoordinates
+
+        this.grid.placeAt(midIndexCoordinates.x, midIndexCoordinates.y, this.graphicsarc);
     }
 
     private addPortal = () => {
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
         this.portal.setDepth(this.gameConfig.deptLevels.portal);
-        this.grid.placeAtIndex(this.middleIndex, this.portal);
+        
+        const midIndexCoordinates = this.midIndexCoordinates
+
+        this.grid.placeAt(midIndexCoordinates.x, midIndexCoordinates.y, this.portal);
         this.drawPortalBorder(0, 0, 100);
     }
 
