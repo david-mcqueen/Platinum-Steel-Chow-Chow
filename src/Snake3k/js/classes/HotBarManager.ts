@@ -8,6 +8,7 @@ import IPowerUp from "./powerups/IPowerUp";
 import SpeedUpPowerup from "./powerups/SpeedUpPowerup";
 import SlowDownPowerup from "./powerups/SlowDownPowerUp";
 import ShrinkPortalPowerUp from "./powerups/ShrinkPortalPowerUp";
+import PowerupManager from "./powerups/PowerupManager";
 
 class HotBarManager extends Phaser.GameObjects.Container {
     private gameConfig: IGameConfig;
@@ -45,22 +46,12 @@ class HotBarManager extends Phaser.GameObjects.Container {
     private addHotBar = () => {
 
         for (let index = 1; index <= 9; index++) {
-            let powerUp: IPowerUp;
+            let powerUp = PowerupManager.instance.getPowerupForKey(index);
 
-            switch (index) {
-                case 1:
-                    powerUp = SpeedUpPowerup.instance;
-                    break;
-                case 2:
-                    powerUp = SlowDownPowerup.instance;
-                    break;
-                case 3:
-                    powerUp = ShrinkPortalPowerUp.instance;
-                    break;
-            }
-            this.drawButton(index - 1, `${index}`, powerUp)
+            this.drawButton(index - 1, `${index}`, powerUp);
         }
-        this.drawButton(9, `0`);
+
+        this.drawButton(9, `0`, PowerupManager.instance.getPowerupForKey(0));
     }
     
     private drawButton = (indexPosition: number, labelString: string, powerUp?: IPowerUp) => {
@@ -91,18 +82,17 @@ class HotBarManager extends Phaser.GameObjects.Container {
     }
 
     private addPowerUpImg = (index: number, powerUp: IPowerUp) => {
-        const orb = this.scene.add.image(24, 24, 'powerup')
-            .setTint(powerUp.displayColorTint.topLeft, powerUp.displayColorTint.topRight, powerUp.displayColorTint.bottomLeft, powerUp.displayColorTint.bottomRight);
+        
+        const orb = powerUp.createImg(this.scene);
 
-        orb.setScrollFactor(0).setOrigin(0, 0);
         this.grid.placeAtIndex(index, orb);
+
         orb.x += 8;
         orb.y += 8;
+        orb.setScrollFactor(0);
         orb.setDepth(this.gameConfig.deptLevels.hotbar);
 
         orb.setVisible(false);
-        powerUp.orb = orb;
-        
     }
 }
 

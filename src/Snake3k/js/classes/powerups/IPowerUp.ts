@@ -8,6 +8,8 @@ interface IPowerUp {
 
     increaseQuantity: () => void;
 
+    createImg: (scene: Phaser.Scene) => Phaser.GameObjects.Image;
+
     orb?: Phaser.GameObjects.Image;
     occuranceProbability: number;
 }

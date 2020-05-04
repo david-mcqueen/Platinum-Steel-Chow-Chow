@@ -22,6 +22,7 @@ import HotBarManager from "../classes/HotBarManager";
 import SpeedUpPowerup from "../classes/powerups/SpeedUpPowerup";
 import SlowDownPowerup from "../classes/powerups/SlowDownPowerUp";
 import ShrinkPortalPowerUp from "../classes/powerups/ShrinkPortalPowerUp";
+import PowerupManager from "../classes/powerups/PowerupManager";
 
 class SceneMain extends Phaser.Scene {
 
@@ -97,7 +98,7 @@ class SceneMain extends Phaser.Scene {
         this.load.audio('coin', [coinSound]);
         this.load.audio('background_main', [backgroundMainSoundmp3]);
         const backgroundSize = 1020;
-        const backgroundRepeat = 2; // 1 for single player. 1 for multiplayer
+        const backgroundRepeat = 1; // 1 for single player. 2 for multiplayer
         this.gameConfig = {
             playableArea: {
                 width: backgroundSize * backgroundRepeat,
@@ -115,14 +116,15 @@ class SceneMain extends Phaser.Scene {
                 width: +this.game.config.width,
                 height: +this.game.config.height
             },
-            gameSpeed: 100, // ms between moving the player
+            gameSpeed: 90, // ms between moving the player
             powerUps: {
                 gameSpeedModifier: 50,
                 powerupDuration: 30000, // 30 seconds
                 portal: {
                     shirnk: 0.8,
                     grow: 1.2
-                }
+                },
+                occuranceProbability: 0.2
             },
             portalModifier: {
                 max: 10,
@@ -347,6 +349,7 @@ class SceneMain extends Phaser.Scene {
         }
 
         this.addPendingFood();
+        this.addPowerup();
     }
 
     update(time: number, delta: number) {
@@ -475,17 +478,22 @@ class SceneMain extends Phaser.Scene {
 
     private addPowerup = () => {
         // SHould a powerup be added?
-        const shouldAddPowerUp = (Math.random() * 100) < 1; // Chance of adding a powerup
+        const shouldAddPowerUp = Math.random() < this.gameConfig.powerUps.occuranceProbability; // Chance of adding a powerup
 
         // How many powerups on screen at once? No limit?
         if (shouldAddPowerUp){
+            const powerupToAdd = PowerupManager.instance.getPowerupForPlayArea();
+            const availablePowerup = powerupToAdd.createImg(this);
 
+            const placement = this.getRandomIndex();
+            this.grid.placeAtIndex(placement, availablePowerup);
+
+            // when picked up, display a label above it as to what it was
+
+            setTimeout(() => {
+                availablePowerup.destroy();
+            }, 15000)
         }
-        // Add the powerup
-
-        // Remove powerups which have been present too long
-
-        // Only allow 1 powerup at once?
     }
 
 }

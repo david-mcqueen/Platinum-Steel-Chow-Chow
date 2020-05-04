@@ -26,12 +26,21 @@ class ShrinkPortalPowerUp implements IPowerUp {
         emitter.off(this.boundHotKey).on(this.boundHotKey, this.activate)
     }
 
+    public createImg = (scene: Phaser.Scene) : Phaser.GameObjects.Image  => {
+        this.orb = scene.add.image(24, 24, 'powerup')
+            .setTint(this.displayColorTint.topLeft, this.displayColorTint.topRight, this.displayColorTint.bottomLeft, this.displayColorTint.bottomRight);
+
+        this.orb.setOrigin(0, 0);
+
+        return this.orb;
+    }
+
     // TODO:- Make a manager of a sort which each powerup adds its bound key to and then only 1 can be bound?
 
     public readonly type: PowerupType;
     public orb?: Phaser.GameObjects.Image;
 
-    public readonly occuranceProbability: number = 0.05;
+    public readonly occuranceProbability: number = 5;0
 
     private _quantity = 0;
 
