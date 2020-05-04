@@ -30,8 +30,6 @@ class ShrinkPortalPowerUp implements IPowerUp {
         this.orb = scene.add.image(24, 24, 'powerup')
             .setTint(this.displayColorTint.topLeft, this.displayColorTint.topRight, this.displayColorTint.bottomLeft, this.displayColorTint.bottomRight);
 
-        this.orb.setOrigin(0, 0);
-
         return this.orb;
     }
 

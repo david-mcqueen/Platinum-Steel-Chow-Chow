@@ -87,6 +87,7 @@ class HotBarManager extends Phaser.GameObjects.Container {
 
         this.grid.placeAtIndex(index, orb);
 
+        orb.setOrigin(0, 0);
         orb.x += 8;
         orb.y += 8;
         orb.setScrollFactor(0);
