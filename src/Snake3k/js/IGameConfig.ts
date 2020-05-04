@@ -23,7 +23,8 @@ interface IGameConfig {
             shirnk: number,
             grow: number,
         },
-        occuranceProbability: number
+        occuranceProbability: number,
+        visibleDuration: number // How long they are on the map to be picked up
     }
     portalModifier: {
         max: number,

@@ -6,6 +6,7 @@ import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import Food from "./Food";
 import Constants from "../../../toolbox/js/Constants";
 import IGameConfig from "../IGameConfig";
+import PowerupManager from "./powerups/PowerupManager";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
@@ -198,7 +199,8 @@ class Player extends Phaser.GameObjects.Container {
 
         this.checkPlayerCollisionWithFood(headIndex, foodTarget);
         this.checkPlayerCollisionWithSelfSnake(headIndex, this.positionWithoutHead);
-        this.checkPlayerCollisionWithPortal(head, portalTarget)
+        this.checkPlayerCollisionWithPortal(head, portalTarget);
+        PowerupManager.instance.checkPlayerCollisionWithPowerups(headIndex);
     }
 
     private checkPlayerCollisionWithPortal(head: Phaser.GameObjects.Rectangle, portalTarget: Phaser.GameObjects.Arc){        

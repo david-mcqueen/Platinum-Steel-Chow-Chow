@@ -3,11 +3,7 @@ import AlignGrid from "../../../toolbox/js/classes/util/AlignGrid";
 import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import { emitter } from "../main";
 import Constants from "../../../toolbox/js/Constants";
-import PowerupType from "../enums/PowerupType";
 import IPowerUp from "./powerups/IPowerUp";
-import SpeedUpPowerup from "./powerups/SpeedUpPowerup";
-import SlowDownPowerup from "./powerups/SlowDownPowerUp";
-import ShrinkPortalPowerUp from "./powerups/ShrinkPortalPowerUp";
 import PowerupManager from "./powerups/PowerupManager";
 
 class HotBarManager extends Phaser.GameObjects.Container {
@@ -83,11 +79,12 @@ class HotBarManager extends Phaser.GameObjects.Container {
 
     private addPowerUpImg = (index: number, powerUp: IPowerUp) => {
         
-        const orb = powerUp.createImg(this.scene);
+        const orb = powerUp.createOrb(this.scene);
 
         this.grid.placeAtIndex(index, orb);
 
         orb.setOrigin(0, 0);
+        powerUp.orb = orb;
         orb.x += 8;
         orb.y += 8;
         orb.setScrollFactor(0);

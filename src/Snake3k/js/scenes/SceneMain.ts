@@ -23,6 +23,7 @@ import SpeedUpPowerup from "../classes/powerups/SpeedUpPowerup";
 import SlowDownPowerup from "../classes/powerups/SlowDownPowerUp";
 import ShrinkPortalPowerUp from "../classes/powerups/ShrinkPortalPowerUp";
 import PowerupManager from "../classes/powerups/PowerupManager";
+import Orb from "../classes/powerups/Orb";
 
 class SceneMain extends Phaser.Scene {
 
@@ -120,11 +121,12 @@ class SceneMain extends Phaser.Scene {
             powerUps: {
                 gameSpeedModifier: 50,
                 powerupDuration: 30000, // 30 seconds
+                visibleDuration: 15000, // 15 seconds
                 portal: {
                     shirnk: 0.8,
                     grow: 1.2
                 },
-                occuranceProbability: 0.2
+                occuranceProbability: 1
             },
             portalModifier: {
                 max: 10,
@@ -182,10 +184,12 @@ class SceneMain extends Phaser.Scene {
         this.hotbarManager = new HotBarManager(this, this.gameConfig);
 
 
-        // TODO:- Debugging!
-        SpeedUpPowerup.instance.increaseQuantity();
-        SlowDownPowerup.instance.increaseQuantity();
-        ShrinkPortalPowerUp.instance.increaseQuantity();
+        // // TODO:- Debugging!
+        // setTimeout(() => {
+        //     SpeedUpPowerup.instance.increaseQuantity();
+        //     SlowDownPowerup.instance.increaseQuantity();
+        //     ShrinkPortalPowerUp.instance.increaseQuantity();
+        // }, 5000)
 
         // Player
         this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);
@@ -483,16 +487,18 @@ class SceneMain extends Phaser.Scene {
         // How many powerups on screen at once? No limit?
         if (shouldAddPowerUp){
             const powerupToAdd = PowerupManager.instance.getPowerupForPlayArea();
-            const availablePowerup = powerupToAdd.createImg(this);
+            const availablePowerup = powerupToAdd.createOrb(this);
 
             const placement = this.getRandomIndex();
             this.grid.placeAtIndex(placement, availablePowerup);
 
-            // when picked up, display a label above it as to what it was
+            powerupToAdd.addPowerupToMap(availablePowerup);
 
             setTimeout(() => {
+                availablePowerup.setActive(false);
+                availablePowerup.setVisible(false);
                 availablePowerup.destroy();
-            }, 15000)
+            }, this.gameConfig.powerUps.visibleDuration);
         }
     }
 

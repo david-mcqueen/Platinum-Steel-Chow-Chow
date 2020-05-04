@@ -5,14 +5,6 @@ import IPowerUp from "./IPowerUp";
 
 class PowerupManager {
 
-    private powerupKeyMappings = {
-        1: SpeedUpPowerup.instance,
-        2: SlowDownPowerup.instance,
-        3: ShrinkPortalPowerUp.instance
-    }
-
-    private readonly sumProbs: number = 0;
-
     private static _instance: PowerupManager;
 
     public static get instance(): PowerupManager {
@@ -27,8 +19,18 @@ class PowerupManager {
         for (let key of Object.keys(this.powerupKeyMappings)) {
             let powerup = this.powerupKeyMappings[key] as IPowerUp;
             this.sumProbs += powerup.occuranceProbability;
-          }
-     }
+        }
+    }
+
+
+    private powerupKeyMappings: {[key: number] : IPowerUp } = {
+        1: SpeedUpPowerup.instance,
+        2: SlowDownPowerup.instance,
+        3: ShrinkPortalPowerUp.instance
+    }
+
+    private readonly sumProbs: number = 0;
+
 
     public getPowerupForKey (key: number): IPowerUp | undefined {
         return this.powerupKeyMappings[key];
@@ -48,6 +50,27 @@ class PowerupManager {
                 return powerup
             }
           }
+    }
+
+    public checkPlayerCollisionWithPowerups = (headIndex: number) => {
+
+        for (let key of Object.keys(this.powerupKeyMappings)) {
+            let powerup = this.powerupKeyMappings[key] as IPowerUp;
+
+            for(let orb of powerup.powerupsOnMap){
+                console.log(orb.gridIndex);
+
+                if(orb.gridIndex === headIndex){
+                    // TODO:- Animate or summin when the user picks it up
+                    // when picked up, display a label above it as to what it was
+                    orb.destroy();
+                    orb.setActive(false);
+
+                    powerup.increaseQuantity();
+
+                }
+            }
+        }
     }
 
 }

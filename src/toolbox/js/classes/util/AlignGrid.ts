@@ -83,6 +83,8 @@ class AlignGrid {
         const x = index - (y * this.config.columns);
 
         this.placeAt(x, y, obj);
+
+        obj.gridIndex = index;
     }
 
     // get the X & y positions of the current index and place there
