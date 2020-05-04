@@ -46,7 +46,6 @@ class SceneMain extends Phaser.Scene {
     private keyboardInput_Hotkey_9: Phaser.Input.Keyboard.Key;
     private keyboardInput_Hotkey_0: Phaser.Input.Keyboard.Key;
 
-
     private scoreBox: ScoreBox;
     private cameraManager: CameraManager;
 
@@ -472,6 +471,21 @@ class SceneMain extends Phaser.Scene {
         this.grid.placeAtIndex(placement, food);
         food.gridIndex = placement;
         this.food = food;
+    }
+
+    private addPowerup = () => {
+        // SHould a powerup be added?
+        const shouldAddPowerUp = (Math.random() * 100) < 1; // Chance of adding a powerup
+
+        // How many powerups on screen at once? No limit?
+        if (shouldAddPowerUp){
+
+        }
+        // Add the powerup
+
+        // Remove powerups which have been present too long
+
+        // Only allow 1 powerup at once?
     }
 
 }

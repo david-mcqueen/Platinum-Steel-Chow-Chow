@@ -9,6 +9,7 @@ interface IPowerUp {
     increaseQuantity: () => void;
 
     orb?: Phaser.GameObjects.Image;
+    occuranceProbability: number;
 }
 
 export default IPowerUp;

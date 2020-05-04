@@ -22,6 +22,9 @@ interface IGameConfig {
         portal: {
             shirnk: number,
             grow: number,
+        },
+        occuranceProbability: {
+            
         }
     }
     portalModifier: {

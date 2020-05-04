@@ -31,6 +31,8 @@ class SpeedUpPowerup implements IPowerUp {
     public readonly type: PowerupType;
     public orb?: Phaser.GameObjects.Image;
 
+    public readonly occuranceProbability: number = 0.80;
+
     private _quantity = 0;
 
     public get quantity() {
