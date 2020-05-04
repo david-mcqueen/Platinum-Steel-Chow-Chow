@@ -117,16 +117,16 @@ class SceneMain extends Phaser.Scene {
                 width: +this.game.config.width,
                 height: +this.game.config.height
             },
-            gameSpeed: 90, // ms between moving the player
+            gameSpeed: 95, // ms between moving the player
             powerUps: {
-                gameSpeedModifier: 50,
+                gameSpeedModifier: 45,
                 powerupDuration: 30000, // 30 seconds
                 visibleDuration: 15000, // 15 seconds
                 portal: {
                     shirnk: 0.8,
                     grow: 1.2
                 },
-                occuranceProbability: 1
+                occuranceProbability: 0.08
             },
             portalModifier: {
                 max: 10,

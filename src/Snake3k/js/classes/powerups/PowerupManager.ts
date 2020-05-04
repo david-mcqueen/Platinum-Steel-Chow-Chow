@@ -58,11 +58,12 @@ class PowerupManager {
             let powerup = this.powerupKeyMappings[key] as IPowerUp;
 
             for(let orb of powerup.powerupsOnMap){
-                console.log(orb.gridIndex);
 
                 if(orb.gridIndex === headIndex){
                     // TODO:- Animate or summin when the user picks it up
                     // when picked up, display a label above it as to what it was
+
+                    // TODO:- show a numeric count next to each to show how many the user has to use
                     orb.destroy();
                     orb.setActive(false);
 
