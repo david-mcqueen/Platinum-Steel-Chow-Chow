@@ -5,11 +5,14 @@ import { game, emitter } from "../main";
 import IGridConfig from "../../../toolbox/js/classes/IGridConfig";
 import Food from "./Food";
 import Constants from "../../../toolbox/js/Constants";
+import IGameConfig from "../IGameConfig";
+import PowerupManager from "./powerups/PowerupManager";
 
 class Player extends Phaser.GameObjects.Container {
     private parts: Phaser.GameObjects.Group; // The grid id of each part
     private grid: AlignGrid;
     private gridConfig: IGridConfig;
+    private gameConfig: IGameConfig;
     private addTailPiece: boolean;
     private _isDead: boolean = false;
 
@@ -38,16 +41,17 @@ class Player extends Phaser.GameObjects.Container {
         return fullPosition;
     }
 
-    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig) {
+    constructor(startIndex: number, length: number, scene: Phaser.Scene, grid: AlignGrid, gridConfig: IGridConfig, gameConfig: IGameConfig) {
         super(scene);
 
         this.scene = scene;
         this.parts = this.scene.add.group();
         this.grid = grid;
         this.gridConfig = gridConfig;
+        this.gameConfig = gameConfig;
 
         const rectHead = this.scene.add.rectangle(0, 0, 20, 20, 0xffffff) as PlayerPart;
-        rectHead.setDepth(100);
+        rectHead.setDepth(this.gameConfig.deptLevels.player);
         grid.placeAtIndex(startIndex, rectHead);
         
         rectHead.gridIndex = startIndex;
@@ -61,7 +65,7 @@ class Player extends Phaser.GameObjects.Container {
             rectTail.gridIndex = positionTail;
             this.grid.placeAtIndex(startIndex - index, rectTail);  // Head is on  the right, tail left so - the index
 
-            rectTail.setDepth(100);
+            rectTail.setDepth(this.gameConfig.deptLevels.player);
             this.parts.add(rectTail);       
         }
     }
@@ -84,7 +88,7 @@ class Player extends Phaser.GameObjects.Container {
         rectTail.gridIndex = this.getNextGridPosition(rectTail);
         rectTail.directionOfTravel = this.getOpposingDirection(rectTail.directionOfTravel);// Besure to reset travel direction
 
-        rectTail.setDepth(100);
+        rectTail.setDepth(this.gameConfig.deptLevels.player);
 
         this.grid.placeAtIndex(rectTail.gridIndex, rectTail);
         this.parts.add(rectTail);
@@ -145,7 +149,7 @@ class Player extends Phaser.GameObjects.Container {
         this.scene.tweens.add({
             targets: this.parts.getChildren(),
             duration: 1000,
-            y: game.config.height,
+            y: this.gameConfig.playableArea.height,
             angle: -270,
             onComplete: callback,
             completeDelay: 1000
@@ -195,7 +199,8 @@ class Player extends Phaser.GameObjects.Container {
 
         this.checkPlayerCollisionWithFood(headIndex, foodTarget);
         this.checkPlayerCollisionWithSelfSnake(headIndex, this.positionWithoutHead);
-        this.checkPlayerCollisionWithPortal(head, portalTarget)
+        this.checkPlayerCollisionWithPortal(head, portalTarget);
+        PowerupManager.instance.checkPlayerCollisionWithPowerups(headIndex);
     }
 
     private checkPlayerCollisionWithPortal(head: Phaser.GameObjects.Rectangle, portalTarget: Phaser.GameObjects.Arc){        

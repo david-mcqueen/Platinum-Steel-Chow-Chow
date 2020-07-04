@@ -1,6 +1,10 @@
 class Align {
     static scaleToGameW(obj: any, pct: number, gameConfig: Phaser.Core.Config){
-        obj.displayWidth = +gameConfig.width * pct;
+        Align.scaleToW(obj, pct, +gameConfig.width);
+    }
+
+    static scaleToW(obj: any, pct: number, width: number){
+        obj.displayWidth = width * pct;
         obj.scaleY = obj.scaleX;
     }
 

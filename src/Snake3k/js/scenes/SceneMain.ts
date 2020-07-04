@@ -10,31 +10,70 @@ import Constants from "../../../toolbox/js/Constants";
 import coinSound from '../../audio/coin.wav';
 
 import backgroundImg from '../../images/background.jpg';
+import powerUpImg from '../../images/circle-24.png';
 import CameraManager from "../classes/CameraManager";
 import MediaManager from "../../../toolbox/js/classes/util/MediaManager";
 import IMediaManagerConfig from "../../../toolbox/js/classes/IMediaManagerConfig";
 
 import backgroundMainSoundmp3 from '../../audio/background_main.mp3';
+import Align from "../../../toolbox/js/classes/util/Align"; 
+import IGameConfig from "../IGameConfig";
+import HotBarManager from "../classes/HotBarManager";
+import SpeedUpPowerup from "../classes/powerups/SpeedUpPowerup";
+import SlowDownPowerup from "../classes/powerups/SlowDownPowerUp";
+import ShrinkPortalPowerUp from "../classes/powerups/ShrinkPortalPowerUp";
+import PowerupManager from "../classes/powerups/PowerupManager";
+import Orb from "../classes/powerups/Orb";
 
 class SceneMain extends Phaser.Scene {
 
-    private gridCellHeight: number = 20;
-    private gridCellWidth: number = 20;
+    private gameConfig: IGameConfig;
 
     private mediaManager: MediaManager;
+    private hotbarManager: HotBarManager;
 
     private grid: AlignGrid;
     private player: Player;
     private previousTime: number = 0;
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
-    private keyboardInput_H: Phaser.Input.Keyboard.Key;
+
+    private keyboardInput_Hotkey_1: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_2: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_3: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_4: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_5: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_6: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_7: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_8: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_9: Phaser.Input.Keyboard.Key;
+    private keyboardInput_Hotkey_0: Phaser.Input.Keyboard.Key;
+
     private scoreBox: ScoreBox;
     private cameraManager: CameraManager;
 
-    private gameSpeed: number = 100; // ms between moving the player
-    private gameMapArea = {
-        height: 1000,
-        width: 1000
+    private get middleIndex(): number {
+        const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
+
+        const cells = cellsWidth * cellsHeight
+
+        const halfWay = cells / 2;
+
+        // minus half the width to get to the middle
+        const mid = halfWay - (cellsWidth / 2);
+
+
+        return mid;
+    }
+
+    private get midIndexCoordinates() : {x: number, y: number} {
+        const cellsWidth = this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const cellsHeight = this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
+        return {
+            x: cellsWidth / 2,
+            y: cellsHeight / 2
+        }
+        
     }
 
     private gridConfig: IGridConfig;
@@ -45,7 +84,10 @@ class SceneMain extends Phaser.Scene {
 
     private food: Food;
 
-    private back: Phaser.GameObjects.Image;
+    private back_TL: Phaser.GameObjects.Image;
+    private back_TR: Phaser.GameObjects.Image;
+    private back_BL: Phaser.GameObjects.Image;
+    private back_BR: Phaser.GameObjects.Image;
 
     constructor(){
         super('SceneMain');
@@ -53,45 +95,117 @@ class SceneMain extends Phaser.Scene {
 
     preload(){
         this.load.image('background', backgroundImg);
+        this.load.image('powerup', powerUpImg);
         this.load.audio('coin', [coinSound]);
         this.load.audio('background_main', [backgroundMainSoundmp3]);
+        const backgroundSize = 1020;
+        const backgroundRepeat = 1; // 1 for single player. 2 for multiplayer
+        this.gameConfig = {
+            playableArea: {
+                width: backgroundSize * backgroundRepeat,
+                height: backgroundSize * backgroundRepeat,
+                grid: {
+                    cellHeight: 20,
+                    cellWidth: 20,
+    
+                    width: (backgroundSize * backgroundRepeat) / 20, // How many cells width & height
+                    height: (backgroundSize * backgroundRepeat) / 20
+                },
+                backgroundRepeat: backgroundRepeat
+            },
+            viewableArea: {
+                width: +this.game.config.width,
+                height: +this.game.config.height
+            },
+            gameSpeed: 95, // ms between moving the player
+            powerUps: {
+                gameSpeedModifier: 45,
+                powerupDuration: 30000, // 30 seconds
+                visibleDuration: 15000, // 15 seconds
+                portal: {
+                    shirnk: 0.8,
+                    grow: 1.2
+                },
+                occuranceProbability: 0.08
+            },
+            portalModifier: {
+                max: 10,
+                min: -1
+            },
+            cameraHints: {
+                hintAreaPadding: 100 // pixes each side
+            },
+            deptLevels: {
+                cameraHints: 10000,
+                hotbar: 10000,
+                player: 1000,
+                portal: 2000
+            }
+        };
+
+        this.cursorKeys = this.input.keyboard.createCursorKeys();
+
+        this.keyboardInput_Hotkey_1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+        this.keyboardInput_Hotkey_2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
+        this.keyboardInput_Hotkey_3 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
+        this.keyboardInput_Hotkey_4 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
+        this.keyboardInput_Hotkey_5 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE);
+        this.keyboardInput_Hotkey_6 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
+        this.keyboardInput_Hotkey_7 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SEVEN);
+        this.keyboardInput_Hotkey_8 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.EIGHT);
+        this.keyboardInput_Hotkey_9 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE);
+        this.keyboardInput_Hotkey_0 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
     }
 
     create(){
-        this.back = this.add.image(0, 0, 'background');
-        this.back.setOrigin(0, 0);
+
+        this.addBackground();
+
         model.score = 0;
 
-        const columns = +this.gameMapArea.width / this.gridCellWidth;
-        const rows = +this.gameMapArea.height / this.gridCellHeight;
+        const columns = +this.gameConfig.playableArea.width / this.gameConfig.playableArea.grid.cellWidth;
+        const rows = +this.gameConfig.playableArea.height / this.gameConfig.playableArea.grid.cellHeight;
 
         // Grid
         this.gridConfig = {
             rows: rows,
             columns: columns,
-            height: this.gameMapArea.height,
-            width: this.gameMapArea.width,
+            height: this.gameConfig.playableArea.height,
+            width: this.gameConfig.playableArea.width,
             scene: this
         };
         
-        this.grid = new AlignGrid(this.gridConfig, this.game.config);
+        this.grid = new AlignGrid(this.gridConfig);
         
         // Score Box
-        this.scoreBox = new ScoreBox({scene: this, x: 465, y: 25, originX: 1, originY: 1}, model); // 1 zoom
+        this.scoreBox = new ScoreBox({scene: this, x: this.gameConfig.viewableArea.width - 25, y: 25, originX: 1, originY: 1}, model); // 1 zoom
+
+        // HotBarManager
+        this.hotbarManager = new HotBarManager(this, this.gameConfig);
+
+
+        // // TODO:- Debugging!
+        // setTimeout(() => {
+        //     SpeedUpPowerup.instance.increaseQuantity();
+        //     SlowDownPowerup.instance.increaseQuantity();
+        //     ShrinkPortalPowerUp.instance.increaseQuantity();
+        // }, 5000)
 
         // Player
-        this.player = new Player(90, 5, this, this.grid, this.gridConfig);
+        this.player = new Player(90, 5, this, this.grid, this.gridConfig, this.gameConfig);
 
         // Cameras
-        this.cameras.main.setBounds(0, 0, +this.gameMapArea.width, +this.gameMapArea.height);
+        this.cameras.main.setBounds(0, 0, +this.gameConfig.playableArea.width, +this.gameConfig.playableArea.height);
         
         // CameraManager
-        this.cameraManager = new CameraManager({scene: this}, this.cameras.main);
+        this.cameraManager = new CameraManager({scene: this}, this.cameras.main, this.gameConfig);
 
+        // Setup the camera follows etc
+        // TODO:- Move this into the camera manager
         this.cameras.main.startFollow(this.player.head, true);
         this.cameras.main.setLerp(0.1, 0.1)
         this.cameras.main.setViewport(0, 0, +this.game.config.width, +this.game.config.height);
-        
+
         // Media Manager
         if (!this.mediaManager){
         const mediaConfig: IMediaManagerConfig = {
@@ -102,17 +216,67 @@ class SceneMain extends Phaser.Scene {
         }
 
         this.previousTime = this.game.getTime();
-        
-        this.cursorKeys = this.input.keyboard.createCursorKeys();
-        this.keyboardInput_H = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+
         this.shouldAddFood = true;
 
         emitter.off(Constants.FOOD_EATEN).on(Constants.FOOD_EATEN, this.foodEaten);
         emitter.off(Constants.PORTAL_ACTIVATED).on(Constants.PORTAL_ACTIVATED, this.portalActivated);
 
+        emitter.off(Constants.POWERUP_SPEED_UP_ACTIVATED).on(Constants.POWERUP_SPEED_UP_ACTIVATED, this.increasePlayerSpeed)
+        emitter.off(Constants.POWERUP_SLOW_DOWN_ACTIVATED).on(Constants.POWERUP_SLOW_DOWN_ACTIVATED, this.decreasePlayerSpeed)
+        emitter.off(Constants.POWERUP_SHRINK_PORTAL_ACTIVATED).on(Constants.POWERUP_SHRINK_PORTAL_ACTIVATED, this.shrinkPortal);
+
+        
         this.addPortal();
         this.addPendingFood();
         // this.grid.debug();
+    }
+
+    private shrinkPortal = () => {
+        this.growPortal(this.gameConfig.powerUps.portal.shirnk);
+    }
+
+    private increasePlayerSpeed = () => {
+        
+        this.gameConfig.gameSpeed -= this.gameConfig.powerUps.gameSpeedModifier;
+
+        setTimeout(() => {
+            this.gameConfig.gameSpeed += this.gameConfig.powerUps.gameSpeedModifier;
+        }, this.gameConfig.powerUps.powerupDuration);
+    }
+
+    private decreasePlayerSpeed = () => {
+        this.gameConfig.gameSpeed += this.gameConfig.powerUps.gameSpeedModifier;
+
+        setTimeout(() => {
+            this.gameConfig.gameSpeed -= this.gameConfig.powerUps.gameSpeedModifier;
+        }, this.gameConfig.powerUps.powerupDuration);
+    }
+
+    private addBackground = () => {
+        this.back_TL = this.add.image(0, 0, 'background');
+        Align.scaleToW(this.back_TL, 1, 1024)
+        this.back_TL.setOrigin(0, 0);
+
+        if (this.gameConfig.playableArea.backgroundRepeat === 1){
+            return;
+        }
+
+        this.back_TR = this.add.image(1024, 0, "background");
+        Align.scaleToW(this.back_TR, 1, 1024)
+        this.back_TR.flipX = true;
+        this.back_TR.setOrigin(0, 0);
+
+        this.back_BL = this.add.image(0, 1024, 'background');
+        Align.scaleToW(this.back_BL, 1, 1024)
+        this.back_BL.flipY = true;
+        this.back_BL.setOrigin(0, 0);
+
+        this.back_BR = this.add.image(1024, 1024, 'background');
+        Align.scaleToW(this.back_BR, 1, 1024)
+        this.back_BR.flipY = true;
+        this.back_BR.flipX = true;
+        this.back_BR.setOrigin(0, 0);
     }
 
     private portalActivated = () => {
@@ -134,26 +298,40 @@ class SceneMain extends Phaser.Scene {
 
         this.graphicsarc = graphics.arc(x, y, radius, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), true);
 
-        this.graphicsarc.setDepth(1000);
+        this.graphicsarc.setDepth(this.gameConfig.deptLevels.portal);
         graphics.strokePath();
-        this.grid.placeAtIndex(1225, this.graphicsarc);
+
+        const midIndexCoordinates = this.midIndexCoordinates
+
+        this.grid.placeAt(midIndexCoordinates.x, midIndexCoordinates.y, this.graphicsarc);
     }
 
     private addPortal = () => {
         this.portal = this.add.circle(0, 0, 100, 0x000000, 1);
-        this.portal.setDepth(1000);
-        this.grid.placeAtIndex(1225, this.portal);
-        this.drawPortalBorder(0, 0, 100);
+        this.portal.setDepth(this.gameConfig.deptLevels.portal);
         
+        const midIndexCoordinates = this.midIndexCoordinates
+
+        this.grid.placeAt(midIndexCoordinates.x, midIndexCoordinates.y, this.portal);
+        this.drawPortalBorder(0, 0, 100);
     }
 
-    private growPortal = () => {
+    private growPortal = (portalGrowAmount?: number) => {
 
-        this.targetPortalRadius = this.portal.radius * 1.125;
+        const portalModifier = this.gameConfig.portalModifier;
+
+        let growAmount = 1 + ((Math.floor(Math.random() * (portalModifier.max - portalModifier.min  + 1)) + portalModifier.min) / 100);
+
+        if (portalGrowAmount){
+            growAmount = portalGrowAmount;
+        }
+
+        // If we are already growing, we can keep on growing based on the target size
+        this.targetPortalRadius = (this.targetPortalRadius ? this.targetPortalRadius : this.portal.radius) * growAmount;
 
         this.tweens.add({
             targets: this.portal,
-            duration: 2500,
+            duration: 5000,
             radius: this.targetPortalRadius,
             onUpdate: (tweens: Phaser.Tweens.Tween, target: any) => {
                 this.drawPortalBorder(0, 0, target.radius);
@@ -161,12 +339,21 @@ class SceneMain extends Phaser.Scene {
         });
     }
 
+    private shouldGrowPortal = () : boolean => {
+        // 50% change of growing portal
+        return Math.floor(Math.random() * 100) > 50;
+    }
+
     private foodEaten = (food: Food) => {
         this.removeFoodItem(food);
         this.shouldAddFood = true;
 
-        this.growPortal();
+        if (this.shouldGrowPortal()){
+            this.growPortal();
+        }
+
         this.addPendingFood();
+        this.addPowerup();
     }
 
     update(time: number, delta: number) {
@@ -175,7 +362,7 @@ class SceneMain extends Phaser.Scene {
         }
 
         // Only move if we have hit the epoch 
-        if(Math.floor(time) - this.gameSpeed > this.previousTime) {
+        if(Math.floor(time) - this.gameConfig.gameSpeed > this.previousTime) {
 
             this.previousTime = Math.floor(time);
             this.player.movePlayer();
@@ -200,10 +387,45 @@ class SceneMain extends Phaser.Scene {
             this.player.setTravelDirection(TravelDirection.RIGHT);
         }
 
-        // TODO:- Activate the powerup
-        // if (this.keyboardInput_H.isDown){
-        //     this.showCameraHints(true);
-        // }
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_1)){
+            emitter.emit(Constants.HOTKEY_1);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_2)){
+            emitter.emit(Constants.HOTKEY_2);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_3)){
+            emitter.emit(Constants.HOTKEY_3);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_4)){
+            emitter.emit(Constants.HOTKEY_4);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_5)){
+            emitter.emit(Constants.HOTKEY_5);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_6)){
+            emitter.emit(Constants.HOTKEY_6);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_7)){
+            emitter.emit(Constants.HOTKEY_7);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_8)){
+            emitter.emit(Constants.HOTKEY_8);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_9)){
+            emitter.emit(Constants.HOTKEY_9);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyboardInput_Hotkey_0)){
+            emitter.emit(Constants.HOTKEY_0);
+        }
 
         // DEBUG:- Add tail piece
         if(this.cursorKeys.space.isDown){
@@ -249,13 +471,35 @@ class SceneMain extends Phaser.Scene {
 
         this.shouldAddFood = false;
         const food = this.add.rectangle(0, 0, 10, 10, 0xffffff) as Food;
-        food.setDepth(1000)
+        food.setDepth(this.gameConfig.deptLevels.portal)
         
         const placement = this.getRandomIndex();
         
         this.grid.placeAtIndex(placement, food);
         food.gridIndex = placement;
         this.food = food;
+    }
+
+    private addPowerup = () => {
+        // SHould a powerup be added?
+        const shouldAddPowerUp = Math.random() < this.gameConfig.powerUps.occuranceProbability; // Chance of adding a powerup
+
+        // How many powerups on screen at once? No limit?
+        if (shouldAddPowerUp){
+            const powerupToAdd = PowerupManager.instance.getPowerupForPlayArea();
+            const availablePowerup = powerupToAdd.createOrb(this);
+
+            const placement = this.getRandomIndex();
+            this.grid.placeAtIndex(placement, availablePowerup);
+
+            powerupToAdd.addPowerupToMap(availablePowerup);
+
+            setTimeout(() => {
+                availablePowerup.setActive(false);
+                availablePowerup.setVisible(false);
+                availablePowerup.destroy();
+            }, this.gameConfig.powerUps.visibleDuration);
+        }
     }
 
 }

@@ -22,7 +22,7 @@ class SceneOver extends Phaser.Scene {
     }
 
     create() {
-        this.grid = new AlignGrid({rows: 11, columns: 11, scene: this}, this.game.config);
+        this.grid = new AlignGrid({rows: 11, columns: 11, scene: this, height: +this.game.config.height, width: +this.game.config.width});
         
         const title = this.add.image(0, 0, 'title');
         Align.scaleToGameW(title, 0.8, this.game.config);

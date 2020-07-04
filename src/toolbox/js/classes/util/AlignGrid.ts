@@ -7,7 +7,7 @@ class AlignGrid {
     private ch: number;
     private graphics: Phaser.GameObjects.Graphics;
 
-    constructor(config: IGridConfig, gameConfig: Phaser.Core.Config) {
+    constructor(config: IGridConfig) {
         this.config = config;
 
         if(!config.scene){
@@ -19,12 +19,6 @@ class AlignGrid {
         }
         if(!config.columns){
             config.columns = 5;
-        }
-        if(!config.height){
-            config.height = +gameConfig.height;
-        }
-        if(!config.width){
-            config.width = +gameConfig.width;
         }
 
         this.scene = config.scene;
@@ -74,8 +68,13 @@ class AlignGrid {
         const x2 = (this.cw * x) + (this.cw / 2);
         const y2 = (this.ch * y) + (this.ch / 2);
 
-        obj.x = x2;
-        obj.y = y2;
+        if (this.config.gridOffset){
+            obj.x = x2 + this.config.gridOffset.x;
+            obj.y = y2 + this.config.gridOffset.y;
+        }else {
+            obj.x = x2;
+            obj.y = y2;
+        }
     }
 
     // Places the object at the given index, counting left to right top to bottom
@@ -84,6 +83,16 @@ class AlignGrid {
         const x = index - (y * this.config.columns);
 
         this.placeAt(x, y, obj);
+
+        obj.gridIndex = index;
+    }
+
+    // get the X & y positions of the current index and place there
+    // Usefor for if the starting position has moved (e.g. following the camera)
+    public placeAtCoordinatesOfIndexCurrentPosition = (index: number, obj: any): void => {
+        const position = this.getCoordinatesOfIndex(index);
+        obj.x = position.x;
+        obj.y = position.y;
     }
 
     public getCoordinatesOfIndex(index: number): {x:number, y: number} {
